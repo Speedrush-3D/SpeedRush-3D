@@ -1,0 +1,84 @@
+body{
+    font-family: sans-serif;
+    margin: 0;
+
+}
+#info{
+position: absolute;
+left:0;
+top:0;
+color: white;
+background-color: black;
+border: 1px solid cyan;
+padding: 0.5rem;
+font-family: monospace;
+text-shadow: 4px 4px 10px cyan;
+
+}
+
+#score-row,
+#distance-row{
+    display: flex;
+}
+
+#score,
+#distance{
+    margin-left: 0.5rem;
+}
+
+#intro-panel,
+#game-over-panel{
+    display: grid;
+    place-items: center;
+    position: absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    background-color: black;
+    color: white;
+    font-family: monospace;
+    text-shadow: 4px 4px 10px cyan;
+    z-index: 10;
+}
+#game-over-panel{
+    display: none;
+}
+
+#intro-column,
+#game-over-column{
+    text-align: center;
+}
+#intro-title,
+#game-over-title{
+    font-size: 3em;
+    margin-bottom: 3em;
+
+}
+
+#start-button,
+#replay-button{
+    background-color: black;
+    color: white;
+    font-family: monospace;
+    border: 1px solid cyan;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+#start-button:hover,
+#replay-button:hover{
+    text-shadow: 4px 4px 10px cyan;
+}
+
+#game-over-score-row,
+#game-over-distance-row{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+#game-over-score,
+#game-over-distance{
+    margin-left: 0.5rem;
+}
