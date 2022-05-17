@@ -78,9 +78,9 @@ class Game {
       document.getElementById("intro-panel").style.display = "none";
     };
 
-    document.getElementById("select-level").onclick = () => {
+    document.getElementById("level-replay-button").onclick = () => {
       document.getElementById("menu-holder").style.display = "grid";
-      document.getElementById("intro-panel").style.display = "none";
+      document.getElementById("game-over-panel").style.display = "none";
     };
 
     document.getElementById("level-select-button-pause").onclick = () => {
@@ -90,18 +90,24 @@ class Game {
 
     this.difficulty = 0;
     document.getElementById("easy").onclick = () => {
-      this.difficulty = 0;
+      this.difficulty =0;
+      this._changeLevel();
       this.running = true;
+      this.clock.start();
       document.getElementById("menu-holder").style.display = "none";
     };
     document.getElementById("med").onclick = () => {
       this.difficulty = 1;
+      this._changeLevel();
       this.running = true;
+      this.clock.start();
       document.getElementById("menu-holder").style.display = "none";
     };
     document.getElementById("hard").onclick = () => {
       this.difficulty = 2;
+      this._changeLevel();
       this.running = true;
+      this.clock.start();
       document.getElementById("menu-holder").style.display = "none";
     };
     document.getElementById("replay-button").onclick = () => {
@@ -118,7 +124,6 @@ class Game {
       this.running = true;
       this.clock.start();
       this.divPausePanel.style.display = "none";
-
       this.lineParent.traverse((item) => {
         if (item instanceof THREE.Mesh) {
           this._setupLaneLines(
@@ -133,10 +138,13 @@ class Game {
           item.position.set(0, 0, this.lineParent.position.z);
         }
       });
+
+      
     };
 
     this.scene = scene;
     this.camera = camera;
+   // console.log(this.difficulty);
     this._reset(false);
     //this.obstacleCounter =0;
 
@@ -155,6 +163,23 @@ class Game {
     this._checkCollisions();
     this._updateGrid();
     this._updateInfoPanel();
+  }
+
+  _changeLevel(){
+    if(this.difficulty == 0){
+     // console.log(true);
+      this.skydome.visible = true;
+      this.skydome3.visible = false;
+      this.skydome2.visible =false;      
+    }else if(this.difficulty ==1){
+      this.skydome.visible = false;
+      this.skydome3.visible =true;
+      this.skydome2.visible = false;
+    }else{
+      this.skydome.visible = false;
+      this.skydome3.visible = false;
+      this.skydome2.visible =true;
+    }
   }
 
   _keydown(event) {
@@ -220,11 +245,21 @@ class Game {
   }
 
   _updateGrid() {
+   // console.log(this.speedZ);
     this.skydome.rotateY(0.1 * (Math.PI / 180));
+    this.skydome2.rotateY(0.1 * (Math.PI / 180));
+    this.skydome3.rotateY(0.1 * (Math.PI / 180));
+
 
     this.speedIncrementor = this.speedIncrementor + 0.15;
     //this.grid.material.uniforms.time.value = this.time;
     // console.log(this.speedIncrementor);
+    if(this.difficulty == 1 && this.speedZ < 9){
+      this.speedZ = this.speedZ + 0.00045;
+      //console.log(this.speedZ);
+    }else if(this.difficulty == 2 && this.speedZ <12 ){
+      this.speedZ = this.speedZ + 0.00045;
+    }
 
     this.objectsParent.position.z =
       this.speedZ * this.time + this.speedIncrementor; //multiply by something to increase speed
@@ -282,11 +317,36 @@ class Game {
         }
       }
     });
+
+    if(this.score > 300 && this.difficulty == 0){
+      this.difficulty = 1;
+      this._changeLevel();
+      
+    }else if(this.score > 800 && this.difficulty == 1){
+      this.difficulty =2;
+      this._changeLevel();
+      
+    }
+
+    //console.log(this.speedZ);
+
+
   }
 
   _reset(replay) {
     this.running = false;
-    this.speedZ = 5;
+
+    //console.log(this.difficulty);
+
+    if(this.difficulty == 0){
+      this.speedZ = 5;
+    }else if(this.difficulty ==1){
+      this.speedZ = 8;
+    }else{
+      this.speedZ = 10;
+    }
+
+    //this.speedZ =5;
     this.speedX = 0;
     this.translateX = 0;
     this.score = 0;
@@ -298,14 +358,17 @@ class Game {
     for (let i = 0; i < this.posArr.length; i++) {
       this.posArr[i] = 0;
     }
-
+    
     this.divScore.innerText = this.score;
     this.divDistance.innerText = 0;
-
+    
     this.time = 0;
     this.clock = new THREE.Clock();
-
+  
     this._initializeScene(this.scene, this.camera, replay);
+    this._changeLevel();
+   
+    
   }
 
   _checkCollisions() {
@@ -775,17 +838,16 @@ class Game {
 
   _createSky() {
     //var geometry = new THREE.SphereGeometry(5, 100, 60);
-    var geometry = new THREE.SphereGeometry(300, 100, 60);
+    var geometry = new THREE.SphereGeometry(30, 100, 60);
 
     var material = new THREE.MeshBasicMaterial();
     material.map = new THREE.TextureLoader().load("resources/sky.jpg");
     material.side = THREE.BackSide;
     this.skydome = new THREE.Mesh(geometry, material);
     //this.skydome.rotateX(900*(Math.PI/180));
-    this.scene.add(this.skydome);
-
-    var geometry2 = new THREE.SphereGeometry(7, 100, 60);
-
+    
+    var geometry2 = new THREE.SphereGeometry(8.5, 100, 60);
+    
     var material2 = new THREE.MeshBasicMaterial();
     material2.map = new THREE.TextureLoader().load("resources/night_sky.jpg");
     material2.side = THREE.BackSide;
@@ -793,7 +855,7 @@ class Game {
     //this.skydome.rotateX(900*(Math.PI/180));
     //this.scene.add(this.skydome2);
 
-    var geometry3 = new THREE.SphereGeometry(100, 100, 60);
+    var geometry3 = new THREE.SphereGeometry(13, 100, 60);
     var material3 = new THREE.MeshBasicMaterial();
     material3.map = new THREE.TextureLoader().load(
       "resources/afternoon_sky.jpg"
@@ -802,16 +864,15 @@ class Game {
     this.skydome3 = new THREE.Mesh(geometry3, material3);
     //this.skydome.rotateX(900*(Math.PI/180));
     //this.scene.add(this.skydome3);
+   // this.skydome = this.skydome2;
+    this.scene.add(this.skydome);
+    this.scene.add(this.skydome2);
+    this.scene.add(this.skydome3);
+
   }
 
   _setupObstacle(obj, refZPos = 0) {
     let lane = math._randomInt(0, 4);
-    //lane=0;
-    /* if(this.obstacleCounter == 0){
-      for(let i=0;i<this.posArr.length;i++){
-        this.posArr[i]= refZPos - 16 - math._randomFloat(0,16);
-      }  
-    }*/
     let currZ = refZPos - 10 - math._randomFloat(0, 10);
 
     this.posArr[this.obstacleCounter] = currZ;
