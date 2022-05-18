@@ -54,6 +54,14 @@ class Game {
   LANELINE_PREFAB = new THREE.PlaneGeometry(0.09, 1);
   LANELINE_MATERIAL = new THREE.MeshBasicMaterial({ color: 0xffffff });
 
+  /* var geo = new THREE.PlaneGeometry(5, 2, 2);
+
+    var mat = new THREE.MeshBasicMaterial();
+    mat.map = new THREE.TextureLoader().load("resources/road.jpg");
+  // mat.side = THREE.BackSide;
+    this.road = new THREE.Mesh(geo, mat);
+    this.scene.add(this.road);*/
+
   ROADLINE_PREFAB = new THREE.PlaneGeometry(0.09, 32);
 
   COLLOSION_THRESHOLD = 0.5;
@@ -467,6 +475,7 @@ class Game {
 
   _initializeScene(scene, camera, replay) {
     if (!replay) {
+
       this._createSky();
       this._createPlayerCar(scene);
       //this._createGrid(scene);
@@ -484,6 +493,7 @@ class Game {
       this.roadLineParent = new THREE.Group();
       scene.add(this.roadLineParent);
 
+      this._createRoad();
       this._spawnRoadLines();
 
       for (let i = 0; i < 8; i++) {
@@ -834,6 +844,16 @@ class Game {
           this.objectsParent.add(obj);
       })
       console.log(this.objectsParent);*/
+  }
+
+  _createRoad(){
+    var geo = new THREE.PlaneGeometry(5, 2, 2);
+
+    var mat = new THREE.MeshBasicMaterial();
+    mat.map = new THREE.TextureLoader().load("resources/road.jpg");
+  // mat.side = THREE.BackSide;
+    this.road = new THREE.Mesh(geo, mat);
+    this.scene.add(this.road);
   }
 
   _createSky() {
