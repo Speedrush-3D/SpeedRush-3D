@@ -8,7 +8,8 @@
         <link rel="stylesheet" href="styles/index.css">
 		
             
-        <script type="module" src="scripts/main.js"></script>
+        <script type="module" src="scripts/main.js">
+        </script>
         
 	</head>
 	<body>
@@ -19,35 +20,37 @@
 
         <div id = "intro-panel">
             <div id="intro-column">
-                <div id="intro-title" >SpeedRush 3D</div>
-                <button id="start-button">Start</button>               
+              <div id="intro-title"><img src="resources/title.png" alt="SR"></div>
+              <div><button id="start-button"><img src="resources/start.png" alt="SR"> </button></div>               
             </div>
         </div>
 
         <div id="game-over-panel">
             <div id = "game-over-column">
-                <div id="game-over-title">Game Over!</div>
+                <div id="game-over-title"><img src="resources/over.png" alt="SR"></div>
                 <div id="game-over-score-row">Score:<div id="game-over-score"> </div></div>
                 <div id="game-over-distance-row">Distance:<div id="game-over-distance"></div></div>
-                <button id="replay-button">Replay</button>
-                <button id="level-replay-button">Level</button>
+                <button id="replay-button"><img src="resources/replay.png" alt="SR"></button>
+                <button id="level-replay-button"><img src="resources/level.png" alt="SR"></button>
 
             </div>
         </div>
 
         <div id="pause-panel">
             <div id = "pause-column">
-                <div id="pause-title">Paused!</div>
+                <div id="pause-title"><img src="resources/pause.png" alt="SR"></div>
                 <div id="paused-score-row">Score:<div id="pause-score"> </div></div>
                 <div id="paused-distance-row">Distance:<div id="pause-distance"></div></div>
-                <button id="continue-button">Continue</button>
-                <button id="replay-button-pause">Replay</button>
-                <button id="level-select-button-pause">Level</button>
+                <button id="continue-button"><img src="resources/continue.png" alt="SR"></button>
+                <button id="replay-button-pause"><img src="resources/replay.png" alt="SR"></button>
+                <button id="level-select-button-pause"><img src="resources/level.png" alt="SR"></button>
             </div>
         </div>
 
         <div id ="menu-holder"> 
             <nav class="menu">
+              <img src="http://i.stack.imgur.com/kx8MT.gif">
+
             <input checked="checked" class="menu-toggler" type="checkbox">
             <label for="menu-toggler"></label>
             <ul>

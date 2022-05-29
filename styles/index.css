@@ -3,6 +3,7 @@
 body {
     overflow: hidden;
     background: #000000;
+
     font-family: monospace;
     margin: 0;
   }
@@ -22,11 +23,18 @@ text-shadow: 4px 4px 10px cyan;
 #score-row,
 #distance-row{
     display: flex;
+    background-color: black;
+    color: white;
+    font-family: monospace;
+    border: 1px solid cyan;
+    padding: 0.5rem;
+    cursor: pointer;
 }
 
 #score,
 #distance{
     margin-left: 0.5rem;
+    
 }
 
 #intro-panel,
@@ -39,6 +47,7 @@ text-shadow: 4px 4px 10px cyan;
     right:0;
     bottom:0;
     left:0;
+    background-image: url('https://acegif.com/wp-content/gifs/race-flag-15.gif');
     background-color: black;
     color: white;
     font-family: monospace;
@@ -60,9 +69,13 @@ text-shadow: 4px 4px 10px cyan;
 #pause-title{
     font-size: 3em;
     margin-bottom: 3em;
-
+    background-color: black;
+    color: white;
+    font-family: monospace;
+    border: 1px solid cyan;
+    padding: 0.5rem;
+    cursor: pointer;
 }
-
 #start-button,
 #replay-button,
 #replay-button-pause,
@@ -93,6 +106,12 @@ text-shadow: 4px 4px 10px cyan;
     justify-content: center;
     margin-bottom: 1rem;
     font-size: 1.3rem;
+    background-color: black;
+    color: white;
+    font-family: monospace;
+    border: 1px solid cyan;
+    padding: 0.5rem;
+    cursor: pointer;
 }
 
 #game-over-score,
