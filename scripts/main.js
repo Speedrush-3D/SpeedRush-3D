@@ -1,10 +1,15 @@
 import * as THREE from "../vendors/three.module.js";
 import model from "./Loader_playerCar.js";
-//import {obstacle} from './Loader_obstacleCars.js'
 import { math } from "./math.js";
 import { FBXLoader } from "../vendors/FBXLoader.js";
 
+
+
+
+
 window.onload = () => {
+
+  
   const scene = new THREE.Scene();
 
   scene.background = new THREE.Color(0xa0a0a0);
@@ -43,6 +48,19 @@ window.onload = () => {
     renderer.render(scene, camera);
   }
   animate();
+  
+
+  const listener = new THREE.AudioListener();
+  camera.add(listener);
+
+  const audioLoader = new THREE.AudioLoader();
+  const backgroundSound = new THREE.Audio(listener);
+  audioLoader.load('sounds/joyride.mp3', function(buffer){
+    backgroundSound.setBuffer(buffer);
+    backgroundSound.setLoop(true);
+    backgroundSound.setVolume(0.1);
+    backgroundSound.play();
+    });  
 };
 
 class Game {
@@ -53,6 +71,14 @@ class Game {
 
   LANELINE_PREFAB = new THREE.PlaneGeometry(0.09, 1);
   LANELINE_MATERIAL = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+  /* var geo = new THREE.PlaneGeometry(5, 2, 2);
+
+    var mat = new THREE.MeshBasicMaterial();
+    mat.map = new THREE.TextureLoader().load("resources/road.jpg");
+  // mat.side = THREE.BackSide;
+    this.road = new THREE.Mesh(geo, mat);
+    this.scene.add(this.road);*/
 
   ROADLINE_PREFAB = new THREE.PlaneGeometry(0.09, 32);
 
@@ -74,22 +100,76 @@ class Game {
     this.divPauseDistance = document.getElementById("pause-distance");
 
     document.getElementById("start-button").onclick = () => {
+      const listener = new THREE.AudioListener();
+      camera.add(listener);
+      const audioLoader = new THREE.AudioLoader();
+      const backgroundSound = new THREE.Audio(listener);
+      audioLoader.load('sounds/start.mp3', function(buffer){
+        backgroundSound.setBuffer(buffer);
+        backgroundSound.setLoop(false);
+        backgroundSound.setVolume(1);
+        backgroundSound.play();
+      });  
       this.running = true;
+
+  //const CarSound = new THREE.Audio(listener);
+  //audioLoader.load('sounds/engine.mp3', function(buffer){
+   // CarSound.setBuffer(buffer);
+   // CarSound.setLoop(true);
+   // CarSound.setVolume(0.5);
+   // CarSound.play();
+   // });  
+
+
+
       document.getElementById("intro-panel").style.display = "none";
     };
 
+
+  
+
     document.getElementById("level-replay-button").onclick = () => {
+      const listener = new THREE.AudioListener();
+      camera.add(listener);
+      const audioLoader = new THREE.AudioLoader();
+      const backgroundSound = new THREE.Audio(listener);
+      audioLoader.load('sounds/button.mp3', function(buffer){
+        backgroundSound.setBuffer(buffer);
+        backgroundSound.setLoop(false);
+        backgroundSound.setVolume(1);
+        backgroundSound.play();
+      });
       document.getElementById("menu-holder").style.display = "grid";
       document.getElementById("game-over-panel").style.display = "none";
     };
 
     document.getElementById("level-select-button-pause").onclick = () => {
+      const listener = new THREE.AudioListener();
+      camera.add(listener);
+      const audioLoader = new THREE.AudioLoader();
+      const backgroundSound = new THREE.Audio(listener);
+      audioLoader.load('sounds/button.mp3', function(buffer){
+        backgroundSound.setBuffer(buffer);
+        backgroundSound.setLoop(false);
+        backgroundSound.setVolume(1);
+        backgroundSound.play();
+      });
       document.getElementById("menu-holder").style.display = "grid";
       this.divPausePanel.style.display = "none";
     };
 
     this.difficulty = 0;
     document.getElementById("easy").onclick = () => {
+      const listener = new THREE.AudioListener();
+      camera.add(listener);
+      const audioLoader = new THREE.AudioLoader();
+      const backgroundSound = new THREE.Audio(listener);
+      audioLoader.load('sounds/start.mp3', function(buffer){
+        backgroundSound.setBuffer(buffer);
+        backgroundSound.setLoop(false);
+        backgroundSound.setVolume(1);
+        backgroundSound.play();
+      });  
       this.difficulty =0;
       this._changeLevel();
       this.running = true;
@@ -97,6 +177,16 @@ class Game {
       document.getElementById("menu-holder").style.display = "none";
     };
     document.getElementById("med").onclick = () => {
+      const listener = new THREE.AudioListener();
+      camera.add(listener);
+      const audioLoader = new THREE.AudioLoader();
+      const backgroundSound = new THREE.Audio(listener);
+      audioLoader.load('sounds/start.mp3', function(buffer){
+        backgroundSound.setBuffer(buffer);
+        backgroundSound.setLoop(false);
+        backgroundSound.setVolume(1);
+        backgroundSound.play();
+      });
       this.difficulty = 1;
       this._changeLevel();
       this.running = true;
@@ -104,6 +194,16 @@ class Game {
       document.getElementById("menu-holder").style.display = "none";
     };
     document.getElementById("hard").onclick = () => {
+      const listener = new THREE.AudioListener();
+      camera.add(listener);
+      const audioLoader = new THREE.AudioLoader();
+      const backgroundSound = new THREE.Audio(listener);
+      audioLoader.load('sounds/start.mp3', function(buffer){
+        backgroundSound.setBuffer(buffer);
+        backgroundSound.setLoop(false);
+        backgroundSound.setVolume(1);
+        backgroundSound.play();
+      });
       this.difficulty = 2;
       this._changeLevel();
       this.running = true;
@@ -111,16 +211,46 @@ class Game {
       document.getElementById("menu-holder").style.display = "none";
     };
     document.getElementById("replay-button").onclick = () => {
+      const listener = new THREE.AudioListener();
+      camera.add(listener);
+      const audioLoader = new THREE.AudioLoader();
+      const backgroundSound = new THREE.Audio(listener);
+      audioLoader.load('sounds/start.mp3', function(buffer){
+        backgroundSound.setBuffer(buffer);
+        backgroundSound.setLoop(false);
+        backgroundSound.setVolume(1);
+        backgroundSound.play();
+      });
       this.running = true;
       this.divGameOverPanel.style.display = "none";
     };
     document.getElementById("replay-button-pause").onclick = () => {
+      const listener = new THREE.AudioListener();
+      camera.add(listener);
+      const audioLoader = new THREE.AudioLoader();
+      const backgroundSound = new THREE.Audio(listener);
+      audioLoader.load('sounds/button.mp3', function(buffer){
+        backgroundSound.setBuffer(buffer);
+        backgroundSound.setLoop(false);
+        backgroundSound.setVolume(1);
+        backgroundSound.play();
+      });
       this._reset(true);
       this.running = true;
       this.divPausePanel.style.display = "none";
     };
 
     document.getElementById("continue-button").onclick = () => {
+      const listener = new THREE.AudioListener();
+      camera.add(listener);
+      const audioLoader = new THREE.AudioLoader();
+      const backgroundSound = new THREE.Audio(listener);
+      audioLoader.load('sounds/start.mp3', function(buffer){
+        backgroundSound.setBuffer(buffer);
+        backgroundSound.setLoop(false);
+        backgroundSound.setVolume(1);
+        backgroundSound.play();
+      });
       this.running = true;
       this.clock.start();
       this.divPausePanel.style.display = "none";
@@ -372,6 +502,7 @@ class Game {
   }
 
   _checkCollisions() {
+    
     /*  this.objectsParent.traverse((child) =>{
           if(child.userData.type == "obstacle"){
             const childZPos = child.position.z + this.objectsParent.position.z;
@@ -387,6 +518,9 @@ class Game {
 
     //console.log(this.objectsParent.position.x, "parent");
     this.objectsParent.traverse((child) => {
+
+      
+      
       if (child.name == "obs") {
         /*const childZPos = child.position.z + this.objectsParent.position.z;
         const thresholdX = this.COLLOSION_THRESHOLD + child.scale.x / 2;
@@ -400,7 +534,7 @@ class Game {
             console.log("x")
           }*/
         if (
-          child.position.z + this.objectsParent.position.z > 0.25 &&
+          child.position.z + this.objectsParent.position.z > -2.3 &&
           Math.abs(child.position.x + this.translateX) <= 0.7
         ) {
           this.collisionCount = this.collisionCount + 1;
@@ -414,9 +548,21 @@ class Game {
         }
         //console.log(this.collisionCount);
 
-        if (this.collisionCount > 3) {
+        if (this.collisionCount > 1) {
           //console.log("collison");
+          
           this._gameOver();
+            
+          const listener = new THREE.AudioListener();
+      //camera.add(listener);
+      const audioLoader = new THREE.AudioLoader();
+      const backgroundSound = new THREE.Audio(listener);
+      audioLoader.load('sounds/crash.mp3', function(buffer){
+        backgroundSound.setBuffer(buffer);
+        backgroundSound.setLoop(false);
+        backgroundSound.setVolume(1);
+        backgroundSound.play();
+      });
         } /*else{
             this.score +=1;
             this.divScore.innerText = this.score;
@@ -430,6 +576,7 @@ class Game {
   }
 
   _pause() {
+  
     this.running = false;
     this.divPauseScore.innerText = this.score;
     this.divPauseDistance.innerText = this.objectsParent.position.z.toFixed(0);
@@ -441,6 +588,7 @@ class Game {
   }
 
   _gameOver() {
+    
     this.running = false;
     this.divGameOverScore.innerText = this.score;
     this.divGameOverDistance.innerText =
@@ -465,8 +613,12 @@ class Game {
     });
   }
 
-  _initializeScene(scene, camera, replay) {
+  _initializeScene(scene, camera, replay) {//in game
+    
+
     if (!replay) {
+      
+
       this._createSky();
       this._createPlayerCar(scene);
       //this._createGrid(scene);
@@ -484,6 +636,7 @@ class Game {
       this.roadLineParent = new THREE.Group();
       scene.add(this.roadLineParent);
 
+      this._createRoad();
       this._spawnRoadLines();
 
       for (let i = 0; i < 8; i++) {
@@ -836,6 +989,16 @@ class Game {
       console.log(this.objectsParent);*/
   }
 
+  _createRoad(){
+    var geo = new THREE.PlaneGeometry(5, 2, -2);
+
+    var mat = new THREE.MeshBasicMaterial();
+    mat.map = new THREE.TextureLoader().load("resources/road.jpg");
+  // mat.side = THREE.BackSide;
+    this.road = new THREE.Mesh(geo, mat);
+    this.scene.add(this.road);
+  }
+
   _createSky() {
     //var geometry = new THREE.SphereGeometry(5, 100, 60);
     var geometry = new THREE.SphereGeometry(30, 100, 60);
@@ -870,6 +1033,7 @@ class Game {
     this.scene.add(this.skydome3);
 
   }
+
 
   _setupObstacle(obj, refZPos = 0) {
     let lane = math._randomInt(0, 4);
