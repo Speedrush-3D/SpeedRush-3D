@@ -143,7 +143,7 @@ class Game {
       document.getElementById("game-over-panel").style.display = "none";
     };
 
-    document.getElementById("level-select-button-pause").onclick = () => {
+   /* document.getElementById("level-select-button-pause").onclick = () => {
       const listener = new THREE.AudioListener();
       camera.add(listener);
       const audioLoader = new THREE.AudioLoader();
@@ -156,7 +156,7 @@ class Game {
       });
       document.getElementById("menu-holder").style.display = "grid";
       this.divPausePanel.style.display = "none";
-    };
+    };*/
 
     this.difficulty = 0;
     document.getElementById("easy").onclick = () => {
@@ -636,7 +636,6 @@ class Game {
       this.roadLineParent = new THREE.Group();
       scene.add(this.roadLineParent);
 
-      this._createRoad();
       this._spawnRoadLines();
 
       for (let i = 0; i < 8; i++) {
@@ -856,7 +855,21 @@ class Game {
     );
     laneLine_6.rotation.set(-Math.PI / 2, Math.PI / 2000, Math.PI);
     laneLine_6.position.set(1.2, 0, -20);
+    
+    var geo = new THREE.PlaneGeometry(5, 32, 1);
+    var mat = new THREE.MeshBasicMaterial();
+    var texture = new THREE.TextureLoader().load("resources/road.jpg");
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.MirroredRepeatWrapping;
+    texture.repeat.set( 4, 4 );
+    mat.map = texture;
 
+    var road = new THREE.Mesh(geo, mat);
+    road.position.set(0, -0.01, -10);
+    road.rotation.set(-Math.PI / 2, Math.PI / 2000, Math.PI);
+    
+
+    this.roadLineParent.add(road);
     this.roadLineParent.add(laneLine_1);
     this.roadLineParent.add(laneLine_2);
     this.roadLineParent.add(laneLine_3);
@@ -989,15 +1002,7 @@ class Game {
       console.log(this.objectsParent);*/
   }
 
-  _createRoad(){
-    var geo = new THREE.PlaneGeometry(5, 2, -2);
 
-    var mat = new THREE.MeshBasicMaterial();
-    mat.map = new THREE.TextureLoader().load("resources/road.jpg");
-  // mat.side = THREE.BackSide;
-    this.road = new THREE.Mesh(geo, mat);
-    this.scene.add(this.road);
-  }
 
   _createSky() {
     //var geometry = new THREE.SphereGeometry(5, 100, 60);
@@ -1046,7 +1051,7 @@ class Game {
     for (let j = 0; j < this.posArr.length; j++) {
       for (let i = 0; i < this.posArr.length; i++) {
         if (this.posArr[i] - currZ - this.objectsParent.position.z < 0.75) {
-          currZ = currZ - 0.75;
+          currZ = currZ - 1;
           this.posArr[this.obstacleCounter] = currZ;
         }
       }
