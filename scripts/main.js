@@ -69,6 +69,7 @@ class Game {
     this.divGameOverScore = document.getElementById("game-over-score");
     this.divGameOverDistance = document.getElementById("game-over-distance");
 
+   // this.divCrashPanel = document.getElementById("crash-panel");
     this.divPausePanel = document.getElementById("pause-panel");
     this.divPauseScore = document.getElementById("pause-score");
     this.divPauseDistance = document.getElementById("pause-distance");
@@ -334,8 +335,9 @@ class Game {
   }
 
   _reset(replay) {
+    this.score = 0;
     this.running = false;
-
+   // this.Crash.visible = false;
     //console.log(this.difficulty);
 
     if(this.difficulty == 0){
@@ -366,6 +368,7 @@ class Game {
     this.clock = new THREE.Clock();
   
     this._initializeScene(this.scene, this.camera, replay);
+
     this._changeLevel();
    
     
@@ -416,6 +419,7 @@ class Game {
 
         if (this.collisionCount > 3) {
           //console.log("collison");
+          ;
           this._gameOver();
         } /*else{
             this.score +=1;
@@ -441,14 +445,35 @@ class Game {
   }
 
   _gameOver() {
+   /* var geo = new THREE.BoxGeometry(10,10);
+    var crash = new THREE.MeshBasicMaterial();
+    crash.map = new THREE.TextureLoader().load("resources/crash.png");
+  // mat.side = THREE.BackSide;
+    this.Crash = new THREE.Mesh(geo, crash);
+    this.scene.add(this.Crash)
+    
+
+    setTimeout(() => {
+      this.Scene.remove(this.Crash);
+    }, 1000);
+*/
+  //  this.divCrashPanel.style.display = "grid";
+  setTimeout(() => {
+     this.Crash.visible = true;
+  }, 1);
+   
     this.running = false;
     this.divGameOverScore.innerText = this.score;
     this.divGameOverDistance.innerText =
       this.objectsParent.position.z.toFixed(0);
+
+      
     setTimeout(() => {
       this.divGameOverPanel.style.display = "grid";
       this._reset(true);
-    }, 1000);
+      this.Crash.visible = false;
+    }, 3000);
+    
   }
 
   _createPlayerCar(scene) {
@@ -517,6 +542,7 @@ class Game {
       camera.rotateX((-20 * Math.PI) / 180);
       camera.position.set(0, 1.5, 3);
     } else {
+      this.Crash.visible = false;
       this.objectsParent.traverse((item) => {
         if (item.name == "obs") {
           //console.log("kid");
@@ -544,7 +570,18 @@ class Game {
         }
       });
     }
+    var geo = new THREE.PlaneGeometry(10,10);
+    var crash = new THREE.MeshBasicMaterial();
+    crash.map = new THREE.TextureLoader().load("resources/crash.png");
+  // mat.side = THREE.BackSide;
+    this.Crash = new THREE.Mesh(geo, crash);
+    this.scene.add(this.Crash)
+    
+    this.Crash.visible = false;
 
+   /* setTimeout(() => {
+      this.Scene.remove(this.Crash);
+    }, 1000);*/
     //camera.rotateX((-75 * Math.PI) / 180); //top view .. needs work
     //camera.position.set(0, 8,2);
   }
