@@ -1,5 +1,3 @@
-import { FBXLoader } from '../vendors/FBXLoader.js';
-import * as THREE from '../vendors/three.module.js';
 const model = new Promise((res, rej) => {
   const loader = new FBXLoader();
   let pathStr= 'resources/car_pack/FBX/SportsCar.fbx'
@@ -30,4 +28,3 @@ const model = new Promise((res, rej) => {
     
   });
 })
-export default model;

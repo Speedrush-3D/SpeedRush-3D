@@ -5,68 +5,75 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>SpeedRush_3D</title>
+
+        <!-- Import Necessary Links From Vendors and Scripts -->
         <link rel="stylesheet" href="styles/index.css">
-		
-            
-        <script type="module" src="scripts/main.js">
+        <script src="vendors/three.min.js"></script>
+        <script src="vendors/howler.min.js"></script>
+        <script src="vendors/FBXLoader.js"></script>
+        <script src="scripts/audio-manager.js"></script>
+        <script src="scripts/Loader_playerCar.js"></script>
+        <script src="scripts/lerp.js"></script>
+        <script src="scripts/game.js"></script>
+        <script src="scripts/main.js"></script>
         </script>
-        
 	</head>
 	<body>
-        <div id ="info">
-            <div id ="score-row"> Score: <div id= "score"> </div></div>
-            <div id ="distance-row"> Distance:<div id= "distance"></div></div>
-        </div>
+    <!-- Start Screen -->
+    <div id = "intro-panel">
+      <div id="intro-column">
+        <div id="intro-title"><img src="resources/title.png" alt="SR"></div>
+        <div><button id="start-button"><img src="resources/start.png" alt="SR"> </button></div>               
+      </div>
+    </div>
 
-        <div id = "intro-panel">
-            <div id="intro-column">
-              <div id="intro-title"><img src="resources/title.png" alt="SR"></div>
-              <div><button id="start-button"><img src="resources/start.png" alt="SR"> </button></div>               
-            </div>
-        </div>
+    <!-- In Game Info-->
+    <div id ="info">
+      <div id ="score-row"> Score: <div id= "score">0</div></div>
+      <div id ="distance-row"> Distance:<div id= "distance">0</div></div>
+    </div>
 
-        <div id="game-over-panel">
-            <div id = "game-over-column">
-                <div id="game-over-title"><img src="resources/over.png" alt="SR"></div>
-                <div id="game-over-score-row">Score:<div id="game-over-score"> </div></div>
-                <div id="game-over-distance-row">Distance:<div id="game-over-distance"></div></div>
-                <button id="replay-button"><img src="resources/replay.png" alt="SR"></button>
-                <button id="level-replay-button"><img src="resources/level.png" alt="SR"></button>
+    <!-- Pause Screen -->
+    <div id="pause-panel">
+      <div id = "pause-column">
+        <div id="pause-title"><img src="resources/pause.png" alt="SR"></div>
+        <div id="paused-score-row">Score:<div id="pause-score"> </div></div>
+        <div id="paused-distance-row">Distance:<div id="pause-distance"></div></div>
+        <button id="continue-button"><img src="resources/continue.png" alt="SR"></button>
+        <button id="replay-button-pause"><img src="resources/replay.png" alt="SR"></button>
+        <!--<button id="level-select-button-pause"><img src="resources/level.png" alt="SR"></button>-->
+      </div>
+    </div>
+    
+    <!-- Menue Screen -->
+    <div id ="menu-holder"> 
+      <nav class="menu">
+          <img src="http://i.stack.imgur.com/kx8MT.gif">
+        <input checked="checked" class="menu-toggler" type="checkbox">
+        <label for="menu-toggler"></label>
+        <ul>
+          <li class="menu-item" id = "easy">
+            <a >Easy</a>
+          </li>
+          <li class="menu-item" id = "med">
+            <a>Med</a>
+          </li>
+          <li class="menu-item" id = "hard">
+            <a>Hard</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
 
-            </div>
-        </div>
-
-        <div id="pause-panel">
-            <div id = "pause-column">
-                <div id="pause-title"><img src="resources/pause.png" alt="SR"></div>
-                <div id="paused-score-row">Score:<div id="pause-score"> </div></div>
-                <div id="paused-distance-row">Distance:<div id="pause-distance"></div></div>
-                <button id="continue-button"><img src="resources/continue.png" alt="SR"></button>
-                <button id="replay-button-pause"><img src="resources/replay.png" alt="SR"></button>
-                <!--<button id="level-select-button-pause"><img src="resources/level.png" alt="SR"></button>-->
-            </div>
-        </div>
-
-        <div id ="menu-holder"> 
-            <nav class="menu">
-              <img src="http://i.stack.imgur.com/kx8MT.gif">
-
-            <input checked="checked" class="menu-toggler" type="checkbox">
-            <label for="menu-toggler"></label>
-            <ul>
-              <li class="menu-item" id = "easy">
-                <a >Easy</a>
-              </li>
-              <li class="menu-item" id = "med">
-                <a>Med</a>
-              </li>
-              <li class="menu-item" id = "hard">
-                <a>Hard</a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-
-
-    </body>
+    <!-- End Screen -->
+    <div id="game-over-panel">
+      <div id = "game-over-column">
+        <div id="game-over-title"><img src="resources/over.png" alt="SR"></div>
+        <div id="game-over-score-row">Score:<div id="game-over-score"> </div></div>
+        <div id="game-over-distance-row">Distance:<div id="game-over-distance"></div></div>
+        <button id="replay-button"><img src="resources/replay.png" alt="SR"></button>
+        <button id="level-replay-button"><img src="resources/level.png" alt="SR"></button>
+      </div>
+    </div>
+  </body>
 </html>
