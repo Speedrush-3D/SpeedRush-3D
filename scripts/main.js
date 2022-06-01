@@ -15,18 +15,41 @@ window.onload = () => {
   scene.background = new THREE.Color(0xa0a0a0);
   scene.fog = new THREE.Fog(0xa0a0a0, 200, 1000);
 
-  const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
-  hemiLight.position.set(0, 200, 0);
+  const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444,0.5);
+  hemiLight.position.set(200, 200, 0);
   scene.add(hemiLight);
 
-  const dirLight = new THREE.DirectionalLight(0xffffff);
+ /* const dirLight = new THREE.DirectionalLight(0xffffff);
   dirLight.position.set(0, 200, 100);
   dirLight.castShadow = true;
   dirLight.shadow.camera.top = 180;
   dirLight.shadow.camera.bottom = -100;
   dirLight.shadow.camera.left = -120;
   dirLight.shadow.camera.right = 120;
-  scene.add(dirLight);
+  scene.add(dirLight);*/
+  
+  /*const light = new THREE.PointLight( 0xffffff,2 , 100 );
+light.position.set( -8, 2, -5 );
+light.castShadow = true; // default false
+scene.add( light );
+
+//Set up shadow properties for the light
+light.shadow.mapSize.width = 512; // default
+light.shadow.mapSize.height = 512; // default
+light.shadow.camera.near = 0.5; // default
+light.shadow.camera.far = 500; // default*/
+
+const light = new THREE.PointLight( 0xffffff, 2, 100 );
+light.castShadow = true; // default false
+light.position.set( 20, 20, -4 );
+scene.add( light );
+
+//Set up shadow properties for the light
+light.shadow.mapSize.width = 4096; // default
+light.shadow.mapSize.height = 4096; // default
+light.shadow.camera.near = 1; // default
+light.shadow.camera.far = 500; // default
+
 
   const camera = new THREE.PerspectiveCamera(
     75,
@@ -35,10 +58,13 @@ window.onload = () => {
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
+
 
   document.body.appendChild(renderer.domElement);
 
-  const gameInstance = new Game(scene, camera);
+  const gameInstance = new Game(scene, camera,light);
 
   //camera.position.z = 3;
 
@@ -64,13 +90,9 @@ window.onload = () => {
 };
 
 class Game {
-  OBSTACLE_PREFAB = new THREE.BoxBufferGeometry(1, 1, 1);
-  OBSTACLE_MATERIAL = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-
-  TREE_MATERIAL = new THREE.MeshBasicMaterial({ color: 0x0000ff });
-
   LANELINE_PREFAB = new THREE.PlaneGeometry(0.09, 1);
-  LANELINE_MATERIAL = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  LANELINE_MATERIAL = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  
 
   /* var geo = new THREE.PlaneGeometry(5, 2, 2);
 
@@ -84,7 +106,8 @@ class Game {
 
   COLLOSION_THRESHOLD = 0.5;
 
-  constructor(scene, camera) {
+  constructor(scene, camera, light) {
+    this.light =light;
     this.divScore = document.getElementById("score");
     this.divDistance = document.getElementById("distance");
 
@@ -298,14 +321,17 @@ class Game {
   _changeLevel(){
     if(this.difficulty == 0){
      // console.log(true);
+     this.light.position.set(20,20,-4);
       this.skydome.visible = true;
       this.skydome3.visible = false;
       this.skydome2.visible =false;      
     }else if(this.difficulty ==1){
+     this.light.position.set(-30,20,-4);
       this.skydome.visible = false;
       this.skydome3.visible =true;
       this.skydome2.visible = false;
     }else{
+      this.light.position.set(-100,20,-4);
       this.skydome.visible = false;
       this.skydome3.visible = false;
       this.skydome2.visible =true;
@@ -380,6 +406,13 @@ class Game {
     this.skydome2.rotateY(0.1 * (Math.PI / 180));
     this.skydome3.rotateY(0.1 * (Math.PI / 180));
 
+    if(this.difficulty == 0 && this.light.position.x > -30){
+      this.light.position.set(this.light.position.x-0.02,20,-4);
+    }
+
+    if(this.difficulty == 1 && this.light.position.x > -100){
+      this.light.position.set(this.light.position.x-0.009,20,-4);
+    }
 
     this.speedIncrementor = this.speedIncrementor + 0.15;
     //this.grid.material.uniforms.time.value = this.time;
@@ -548,7 +581,7 @@ class Game {
         }
         //console.log(this.collisionCount);
 
-        if (this.collisionCount > 1) {
+        if (this.collisionCount > 5) {
           //console.log("collison");
           
           this._gameOver();
@@ -611,9 +644,7 @@ class Game {
       this.cube.scale.set(0.5, 0.5, 0.5);
       this.cube.translateY(0.75);
       scene.add(this.cube);*/
-    this.playerBox = new THREE.Box3();
     model.then((object) => {
-      this.playerBox.setFromObject(object);
       scene.add(object);
     });
   }
@@ -628,17 +659,20 @@ class Game {
       this._createPlayerCar(scene);
       //this._createGrid(scene);
       this.objectsParent = new THREE.Group();
-      scene.add(this.objectsParent);
       this.objectsParent.userData = { type: "obstacle_parent" };
-
+      
       this.lineParent = new THREE.Group();
-      scene.add(this.lineParent);
-
+      
       this.treesParent = new THREE.Group();
-      scene.add(this.treesParent);
       this.treesParent.userData = { type: "trees_parent" };
-
+      
       this.roadLineParent = new THREE.Group();
+      
+      
+      
+      scene.add(this.objectsParent);
+      scene.add(this.lineParent);
+      scene.add(this.treesParent);
       scene.add(this.roadLineParent);
 
       this._spawnRoadLines();
@@ -867,7 +901,7 @@ class Game {
     laneLine_6.position.set(1.2, 0, -20);
     
     var geo = new THREE.PlaneGeometry(5, 32, 1);
-    var mat = new THREE.MeshBasicMaterial();
+    var mat = new THREE.MeshStandardMaterial();
     var texture = new THREE.TextureLoader().load("resources/road.jpg");
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.MirroredRepeatWrapping;
@@ -877,7 +911,26 @@ class Game {
     var road = new THREE.Mesh(geo, mat);
     road.position.set(0, -0.01, -10);
     road.rotation.set(-Math.PI / 2, Math.PI / 2000, Math.PI);
+    road.receiveShadow=true;
+    road.castShadow =false;
+    
+    laneLine_1.receiveShadow =true;
+    laneLine_1.castShadow=false;
 
+    laneLine_2.receiveShadow =true;
+    laneLine_2.castShadow=false;
+    
+    laneLine_3.receiveShadow =true;
+    laneLine_3.castShadow=false;
+
+    laneLine_4.receiveShadow =true;
+    laneLine_4.castShadow=false;
+
+    laneLine_5.receiveShadow =true;
+    laneLine_5.castShadow=false;
+
+    laneLine_6.receiveShadow =true;
+    laneLine_6.castShadow=false;
 
     var geo = new THREE.PlaneGeometry(32, 32, 1);
     var crash = new THREE.MeshBasicMaterial();
@@ -907,6 +960,8 @@ class Game {
     const plane = new THREE.Mesh(this.LANELINE_PREFAB, this.LANELINE_MATERIAL);
     plane.rotation.set(-Math.PI / 2, Math.PI / 2000, Math.PI);
     plane.userData = { type: lane, pos: pos };
+    plane.castShadow=false;
+    plane.receiveShadow=true;
     this._setupLaneLines(plane, lane, 0, pos);
     this.lineParent.add(plane);
   }
