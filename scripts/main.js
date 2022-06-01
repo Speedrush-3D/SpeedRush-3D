@@ -9,6 +9,13 @@ window.onload = () => {
   
   // Create Game Instance & Animate
   const gameInstance = new Game(scene, camera);
+
+  // Animate Game Loop
+  function animate() {
+    requestAnimationFrame(animate);
+    gameInstance.update();
+    renderer.render(scene, camera);
+  }
   animate();
 };
 
@@ -53,10 +60,3 @@ function setupRenderer(){
   document.body.appendChild(renderer.domElement);
   return renderer;
 };
-
-// Animate Game Loop
-function animate() {
-  requestAnimationFrame(animate);
-  gameInstance.update();
-  renderer.render(scene, camera);
-}
