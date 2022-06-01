@@ -45,9 +45,9 @@ light.position.set( 20, 20, -4 );
 scene.add( light );
 
 //Set up shadow properties for the light
-light.shadow.mapSize.width = 512; // default
-light.shadow.mapSize.height = 512; // default
-light.shadow.camera.near = 0.5; // default
+light.shadow.mapSize.width = 4096; // default
+light.shadow.mapSize.height = 4096; // default
+light.shadow.camera.near = 1; // default
 light.shadow.camera.far = 500; // default
 
 
@@ -60,8 +60,7 @@ light.shadow.camera.far = 500; // default
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
-  renderer.shadowMapWidth = 2048;
-  renderer.shadowMapHeight = 2048;
+
 
   document.body.appendChild(renderer.domElement);
 
@@ -582,7 +581,7 @@ class Game {
         }
         //console.log(this.collisionCount);
 
-        if (this.collisionCount > 1) {
+        if (this.collisionCount > 5) {
           //console.log("collison");
           
           this._gameOver();
