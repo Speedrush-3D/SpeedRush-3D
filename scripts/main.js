@@ -40,8 +40,8 @@ light.shadow.camera.near = 0.5; // default
 light.shadow.camera.far = 500; // default*/
 
 const light = new THREE.PointLight( 0xffffff, 2, 100 );
-light.position.set( 20, 20, -4 );
 light.castShadow = true; // default false
+light.position.set( 20, 20, -4 );
 scene.add( light );
 
 //Set up shadow properties for the light
@@ -59,11 +59,13 @@ light.shadow.camera.far = 500; // default
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap; 
+  renderer.shadowMapWidth = 2048;
+  renderer.shadowMapHeight = 2048;
 
   document.body.appendChild(renderer.domElement);
 
-  const gameInstance = new Game(scene, camera);
+  const gameInstance = new Game(scene, camera,light);
 
   //camera.position.z = 3;
 
@@ -105,7 +107,8 @@ class Game {
 
   COLLOSION_THRESHOLD = 0.5;
 
-  constructor(scene, camera) {
+  constructor(scene, camera, light) {
+    this.light =light;
     this.divScore = document.getElementById("score");
     this.divDistance = document.getElementById("distance");
 
@@ -319,14 +322,17 @@ class Game {
   _changeLevel(){
     if(this.difficulty == 0){
      // console.log(true);
+     this.light.position.set(20,20,-4);
       this.skydome.visible = true;
       this.skydome3.visible = false;
       this.skydome2.visible =false;      
     }else if(this.difficulty ==1){
+     this.light.position.set(-30,20,-4);
       this.skydome.visible = false;
       this.skydome3.visible =true;
       this.skydome2.visible = false;
     }else{
+      this.light.position.set(-100,20,-4);
       this.skydome.visible = false;
       this.skydome3.visible = false;
       this.skydome2.visible =true;
@@ -401,6 +407,13 @@ class Game {
     this.skydome2.rotateY(0.1 * (Math.PI / 180));
     this.skydome3.rotateY(0.1 * (Math.PI / 180));
 
+    if(this.difficulty == 0 && this.light.position.x > -30){
+      this.light.position.set(this.light.position.x-0.02,20,-4);
+    }
+
+    if(this.difficulty == 1 && this.light.position.x > -100){
+      this.light.position.set(this.light.position.x-0.009,20,-4);
+    }
 
     this.speedIncrementor = this.speedIncrementor + 0.15;
     //this.grid.material.uniforms.time.value = this.time;
