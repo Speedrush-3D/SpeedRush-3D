@@ -113,6 +113,22 @@ top: 50px;
 #continue-button:hover{
   text-shadow: 4px 4px 10px cyan;
 }
+#level-up{
+  position: absolute;
+  mix-blend-mode: multiply 35;
+  filter: brightness(500%);
+  filter: contrast(200%);
+  left: 550px;
+  top: 150px;
+  }
+  #crash{
+  position: absolute;
+  mix-blend-mode: multiply 41;
+  filter: brightness(500%);
+  filter: contrast(200%);
+  left: 300px;
+  top: 50px;
+  }
 
 #game-over-score-row,
 #game-over-distance-row,

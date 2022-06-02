@@ -600,13 +600,11 @@ class Game {
 
   _gameOver() {
 
-   /* setTimeout(() => {
-      this.Crash.visible = true;
-    }, 10);*/
     document.getElementById("crash").style.display = "grid";
       setTimeout(() => {
         document.getElementById("crash").style.display = "none" ;
       }, 3000);
+
     
     this.running = false;
     this.divGameOverScore.innerText = this.score;
@@ -689,7 +687,6 @@ class Game {
       camera.rotateX((-20 * Math.PI) / 180);
       camera.position.set(0, 1.5, 3);
     } else {
-     // this.Crash.visible = false;
       this.objectsParent.traverse((item) => {
         if (item.name == "obs") {
           //console.log("kid");
@@ -894,21 +891,17 @@ class Game {
     road.rotation.set(-Math.PI / 2, Math.PI / 2000, Math.PI);
 
 
-    /*var geo = new THREE.PlaneGeometry(32, 32, 1);
-    var crash = new THREE.MeshBasicMaterial();
-    var texture = new THREE.TextureLoader().load("resources/crash.png");
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.flipY =true;
-    texture.repeat.set( 5, 5 );
-    crash.map = texture;
-    this.Crash = new THREE.Mesh(geo, crash);
-    this.Crash.position.set(0, 0.01,0 );
-    this.Crash.rotation.set(-Math.PI / 2, Math.PI / 2000, Math.PI);
-    this.Crash.scale.set(-1,-1,1);
-    this.Crash.visible = false;
-    */
-    //this.roadLineParent.add(this.Crash);
+
+    laneLine_4.receiveShadow =true;
+    laneLine_4.castShadow=false;
+
+    laneLine_5.receiveShadow =true;
+    laneLine_5.castShadow=false;
+
+    laneLine_6.receiveShadow =true;
+    laneLine_6.castShadow=false;
+
+
     this.roadLineParent.add(road);
     this.roadLineParent.add(laneLine_1);
     this.roadLineParent.add(laneLine_2);
