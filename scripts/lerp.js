@@ -1,5 +1,5 @@
 class Lerp {
- 
+    
     constructor(from, to, delay) {
       this.from = from;
       this.to = to;
@@ -39,4 +39,4 @@ class Lerp {
         return this;
     }
     
-  }
+}
