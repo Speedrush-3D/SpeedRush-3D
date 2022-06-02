@@ -146,6 +146,8 @@ class Game {
 
 
       document.getElementById("intro-panel").style.display = "none";
+      document.getElementById("level-up").style.display="none";
+      document.getElementById("crash").style.display="none";
     };
 
 
@@ -484,10 +486,19 @@ class Game {
     if(this.score > 300 && this.difficulty == 0){
       this.difficulty = 1;
       this._changeLevel();
+      document.getElementById("level-up").style.display = "grid";
+      setTimeout(() => {
+        document.getElementById("level-up").style.display = "none" ;
+      }, 2000);
       
     }else if(this.score > 800 && this.difficulty == 1){
       this.difficulty =2;
       this._changeLevel();
+      document.getElementById("level-up").style.display = "grid";
+      setTimeout(() => {
+        document.getElementById("level-up").style.display = "none" ;
+      }, 2000);
+
       
     }
 
@@ -622,9 +633,11 @@ class Game {
 
   _gameOver() {
 
+
+    document.getElementById("crash").style.display = "grid";
     setTimeout(() => {
-      this.Crash.visible = true;
-    }, 10);
+      document.getElementById("crash").style.display = "none" ;
+    }, 3000);
     
     this.running = false;
     this.divGameOverScore.innerText = this.score;
@@ -633,7 +646,6 @@ class Game {
     setTimeout(() => {
       this.divGameOverPanel.style.display = "grid";
       this._reset(true);
-      this.Crash.visible = false;
     }, 3000);
   }
 
@@ -708,7 +720,6 @@ class Game {
       camera.rotateX((-20 * Math.PI) / 180);
       camera.position.set(0, 1.5, 3);
     } else {
-      this.Crash.visible = false;
       this.objectsParent.traverse((item) => {
         if (item.name == "obs") {
           //console.log("kid");
@@ -932,21 +943,7 @@ class Game {
     laneLine_6.receiveShadow =true;
     laneLine_6.castShadow=false;
 
-    var geo = new THREE.PlaneGeometry(32, 32, 1);
-    var crash = new THREE.MeshBasicMaterial();
-    var texture = new THREE.TextureLoader().load("resources/crash.png");
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.flipY =true;
-    texture.repeat.set( 5, 5 );
-    crash.map = texture;
-    this.Crash = new THREE.Mesh(geo, crash);
-    this.Crash.position.set(0, 0.01,0 );
-    this.Crash.rotation.set(-Math.PI / 2, Math.PI / 2000, Math.PI);
-    this.Crash.scale.set(-1,-1,1);
-    this.Crash.visible = false;
-    
-    this.roadLineParent.add(this.Crash);
+   
     this.roadLineParent.add(road);
     this.roadLineParent.add(laneLine_1);
     this.roadLineParent.add(laneLine_2);
