@@ -339,17 +339,17 @@ class Game {
   }
 
   _createPlayerCar(scene) {
-    const geometry = new THREE.BoxGeometry();
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    this.cube = new THREE.Mesh(geometry, material);
-    this.cube.scale.set(0.5, 0.5, 0.5);
-    this.cube.translateY(0.75);
-    scene.add(this.cube);
-    // this.playerBox = new THREE.Box3();
-    // model.then((object) => {
-    //   this.playerBox.setFromObject(object);
-    //   scene.add(object);
-    // });
+    // const geometry = new THREE.BoxGeometry();
+    // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    // this.cube = new THREE.Mesh(geometry, material);
+    // this.cube.scale.set(0.5, 0.5, 0.5);
+    // this.cube.translateY(0.75);
+    // scene.add(this.cube);
+    this.playerBox = new THREE.Box3();
+    model.then((object) => {
+      this.playerBox.setFromObject(object);
+      scene.add(object);
+    });
   }
 
   _initializeScene(scene, camera, replay) {//in game
