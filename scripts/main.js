@@ -134,8 +134,8 @@ class Game {
       // });
 
       document.getElementById("intro-panel").style.display = "none";
-      document.getElementById("level-up").style.display="none";
-      document.getElementById("crash").style.display="none";
+      document.getElementById("level-up").style.display = "none";
+      document.getElementById("crash").style.display = "none";
     };
 
     document.getElementById("level-replay-button").onclick = () => {
@@ -288,6 +288,12 @@ class Game {
 
     document.addEventListener("keydown", this._keydown.bind(this));
     document.addEventListener("keyup", this._keyup.bind(this));
+
+    document.addEventListener("mousemove", this._mouse.bind(this));
+
+    let windowSize = window.innerWidth;
+    this.left = windowSize / 3;
+    this.right = windowSize / 3 + windowSize / 3;
   }
 
   update() {
@@ -321,6 +327,21 @@ class Game {
       this.skydome3.visible = false;
       this.skydome2.visible = true;
     }
+  }
+
+  _mouse(event) {
+    let newSpeedX;
+    //console.log(event.clientX);
+    if (event.clientX > this.left && event.clientX < this.right) {
+      newSpeedX = 0.0;
+    } else if (event.clientX < this.left) {
+      newSpeedX = -1.0;
+    } else if (event.clientX > this.right) {
+      newSpeedX = 1.0;
+    } else {
+      newSpeedX = 0.0;
+    }
+    this.speedX = newSpeedX;
   }
 
   _keydown(event) {
