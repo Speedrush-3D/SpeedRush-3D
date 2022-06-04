@@ -1,5 +1,6 @@
 import * as THREE from "../vendors/three.module.js";
 import model from "./Loader_playerCar.js";
+import {Lerp} from "./lerp.js"
 import { math } from "./math.js";
 import { FBXLoader } from "../vendors/FBXLoader.js";
 
@@ -82,7 +83,7 @@ light.shadow.camera.far = 500; // default*/
 
 class Game {
   LANELINE_PREFAB = new THREE.PlaneGeometry(0.09, 1);
-  LANELINE_MATERIAL = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  LANELINE_MATERIAL = new THREE.MeshStandardMaterial({ color: 0xfbf9f9 });
 
   /* var geo = new THREE.PlaneGeometry(5, 2, 2);
 
@@ -294,12 +295,19 @@ class Game {
     let windowSize = window.innerWidth;
     this.left = windowSize / 3;
     this.right = windowSize / 3 + windowSize / 3;
+
+    this.rotationLerp = null;
   }
 
   update() {
     if (!this.running) return;
+    const timeDelta = this.clock.getDelta();
+    this. time += timeDelta;
 
-    this.time += this.clock.getDelta();
+    if(this.rotationLerp !==null){
+      this.rotationLerp.update(timeDelta);
+    }
+
     //console.log(this.time);
 
     this.translateX += this.speedX * -0.05;
@@ -384,13 +392,17 @@ class Game {
       default:
         return;
     }
-
-    this.speedX = newSpeedX;
+    if(this.speedX !== newSpeedX){
+      this.speedX = newSpeedX;
+      this._rotateCar(-this.speedX * 20 * Math.PI/180, 0.8);
+    }
+    
     //console.log(this.speedX);
   }
 
   _keyup() {
     this.speedX = 0;
+    this._rotateCar(0,0.5);
   }
 
   _changeView(camera) {
@@ -542,6 +554,13 @@ class Game {
     this._changeLevel();
   }
 
+  _rotateCar(targetRotation, delay){
+    const $this = this;
+    this.rotationLerp = new Lerp(this.car.rotation.y, targetRotation, delay)
+      .onUpdate((value)=>{$this.car.rotation.y = value})
+      .onFinish(()=> {$this.rotationLerp = null});
+  }
+
   _checkCollisions() {
     /*  this.objectsParent.traverse((child) =>{
           if(child.userData.type == "obstacle"){
@@ -635,16 +654,25 @@ class Game {
     setTimeout(() => {
       this.divGameOverPanel.style.display = "grid";
       this._reset(true);
-    }, 3000);
+    }, 1000);
   }
 
   _createPlayerCar(scene) {
-    /*const geometry = new THREE.BoxGeometry();
-      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-      this.cube = new THREE.Mesh(geometry, material);
-      this.cube.scale.set(0.5, 0.5, 0.5);
-      this.cube.translateY(0.75);
-      scene.add(this.cube);*/
+    const geometry = new THREE.BoxGeometry();
+      const material = new THREE.MeshBasicMaterial({ color: 0xfbf9f9 });
+      this.car = new THREE.Group();
+      this.body = new THREE.Mesh(geometry,  this.LANELINE_MATERIAL);
+      this.body.scale.set(0.6, 0.2, 1.5);
+      this.body.translateY(0.2);
+      this.body.translateZ(0.1);
+
+      this.top = new THREE.Mesh(new THREE.CapsuleGeometry( 1, 1, 2, 40 ), this.LANELINE_MATERIAL);
+      this.top.scale.set(0.2, 0.2, 0.5);
+      this.top.translateY(0.2);
+      this.top.translateZ(0.1);
+
+      this.car.add(this.body);
+      this.car.add(this.top);
 
       // Create Car Headlights
       const targetObject = new THREE.Object3D();
@@ -660,9 +688,6 @@ class Game {
       spotLight.distance = 300;
       spotLight.intensity = 2;
 
-      const spotLightHelper = new THREE.SpotLightHelper( spotLight );
-      scene.add( spotLightHelper );
-
       spotLight.castShadow = true;
       spotLight.shadow.mapSize.width = 1024;
       spotLight.shadow.mapSize.height = 1024;
@@ -671,11 +696,18 @@ class Game {
       spotLight.shadow.camera.far = 4000;
       spotLight.shadow.camera.fov = 30;
 
+      this.car.add(spotLight);
+      scene.add(this.car);
+
     // Add car and Headlights to scene
-    model.then((object) => {
-      object.add(spotLight);
-      scene.add(object);
-    });
+    // model.then((object) => {
+    //   object.add(spotLight);
+    //   scene.add(object);
+    // });
+  }
+
+  _createCar(){
+    
   }
 
   _initializeScene(scene, camera, replay) {
