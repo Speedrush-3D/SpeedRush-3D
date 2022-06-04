@@ -330,18 +330,18 @@ class Game {
   }
 
   _mouse(event) {
-    let newSpeedX;
-    //console.log(event.clientX);
-    if (event.clientX > this.left && event.clientX < this.right) {
-      newSpeedX = 0.0;
-    } else if (event.clientX < this.left) {
-      newSpeedX = -1.0;
-    } else if (event.clientX > this.right) {
-      newSpeedX = 1.0;
-    } else {
-      newSpeedX = 0.0;
-    }
-    this.speedX = newSpeedX;
+    // let newSpeedX;
+    // //console.log(event.clientX);
+    // if (event.clientX > this.left && event.clientX < this.right) {
+    //   newSpeedX = 0.0;
+    // } else if (event.clientX < this.left) {
+    //   newSpeedX = -1.0;
+    // } else if (event.clientX > this.right) {
+    //   newSpeedX = 1.0;
+    // } else {
+    //   newSpeedX = 0.0;
+    // }
+    // this.speedX = newSpeedX;
   }
 
   _keydown(event) {
@@ -645,7 +645,35 @@ class Game {
       this.cube.scale.set(0.5, 0.5, 0.5);
       this.cube.translateY(0.75);
       scene.add(this.cube);*/
+
+      // Create Car Headlights
+      const targetObject = new THREE.Object3D();
+      targetObject.position.set(0,0,-200);
+      scene.add(targetObject);
+
+      const spotLight = new THREE.SpotLight( 0xddffff );
+      spotLight.position.set( 0, 0, 10 );
+      spotLight.target = targetObject;
+      spotLight.angle = Math.PI / 40;
+      spotLight.penumbra = 0.1;
+      spotLight.decay = 2;
+      spotLight.distance = 300;
+      spotLight.intensity = 2;
+
+      const spotLightHelper = new THREE.SpotLightHelper( spotLight );
+      scene.add( spotLightHelper );
+
+      spotLight.castShadow = true;
+      spotLight.shadow.mapSize.width = 1024;
+      spotLight.shadow.mapSize.height = 1024;
+
+      spotLight.shadow.camera.near = 500;
+      spotLight.shadow.camera.far = 4000;
+      spotLight.shadow.camera.fov = 30;
+
+    // Add car and Headlights to scene
     model.then((object) => {
+      object.add(spotLight);
       scene.add(object);
     });
   }
