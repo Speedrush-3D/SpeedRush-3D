@@ -658,46 +658,75 @@ class Game {
   }
 
   _createPlayerCar(scene) {
-    const geometry = new THREE.BoxGeometry();
-      const material = new THREE.MeshBasicMaterial({ color: 0xfbf9f9 });
-      this.car = new THREE.Group();
-      this.body = new THREE.Mesh(geometry,  this.LANELINE_MATERIAL);
-      this.body.scale.set(0.6, 0.2, 1.5);
-      this.body.translateY(0.2);
-      this.body.translateZ(0.1);
+    // const geometry = new THREE.BoxGeometry();
+    // const material = new THREE.MeshBasicMaterial({ color: 0xfbf9f9 });
 
-      this.top = new THREE.Mesh(new THREE.CapsuleGeometry( 1, 1, 2, 40 ), this.LANELINE_MATERIAL);
-      this.top.scale.set(0.2, 0.2, 0.5);
-      this.top.translateY(0.2);
-      this.top.translateZ(0.1);
+    const carBody = new THREE.Mesh(
+      new THREE.CapsuleBufferGeometry(0.45,0.7,4,4),
+      this.LANELINE_MATERIAL
+    );
 
-      this.car.add(this.body);
-      this.car.add(this.top);
+    carBody.translateY(-0.1);
+    carBody.rotateZ(45*Math.PI/180);
+    carBody.rotateX(90*Math.PI/180);
 
-      // Create Car Headlights
-      const targetObject = new THREE.Object3D();
-      targetObject.position.set(0,0,-200);
-      scene.add(targetObject);
+    const carTop = new THREE.Mesh(
+      new THREE.CapsuleBufferGeometry(0.2,0.4,4,40),
+      new THREE.MeshStandardMaterial({ color: 0x4e4e4e })
+    );
+    carTop.translateY(0.2);
+    carTop.rotateZ(45*Math.PI/180);
+    carTop.rotateX(90*Math.PI/180);
 
-      const spotLight = new THREE.SpotLight( 0xddffff );
-      spotLight.position.set( 0, 0, 10 );
-      spotLight.target = targetObject;
-      spotLight.angle = Math.PI / 40;
-      spotLight.penumbra = 0.1;
-      spotLight.decay = 2;
-      spotLight.distance = 300;
-      spotLight.intensity = 2;
+    const tailLightL = new THREE.Mesh(
+      new THREE.OctahedronBufferGeometry(0.06,2),
+      new THREE.MeshStandardMaterial({ color: 0xff0000 })
+    );
 
-      spotLight.castShadow = true;
-      spotLight.shadow.mapSize.width = 1024;
-      spotLight.shadow.mapSize.height = 1024;
+    const tailLightR = new THREE.Mesh(
+      new THREE.OctahedronBufferGeometry(0.06,10),
+      new THREE.MeshStandardMaterial({ color: 0xff0000 })
+    );
 
-      spotLight.shadow.camera.near = 500;
-      spotLight.shadow.camera.far = 4000;
-      spotLight.shadow.camera.fov = 30;
+    tailLightL.translateZ(0.6);
+    tailLightL.translateX(0.15);
+    tailLightL.translateY(0.13);
 
-      this.car.add(spotLight);
-      scene.add(this.car);
+    tailLightR.translateZ(0.6);
+    tailLightR.translateX(-0.15);
+    tailLightR.translateY(0.13);
+    
+
+    this.car = new THREE.Group();
+    this.car.add(carBody);
+    this.car.add(carTop);
+    this.car.add(tailLightL);
+    this.car.add(tailLightR);
+
+    // Create Car Headlights
+    const targetObject = new THREE.Object3D();
+    targetObject.position.set(0,0,-200);
+    scene.add(targetObject);
+
+    const spotLight = new THREE.SpotLight( 0xddffff );
+    spotLight.position.set( 0, 0, -0.1 );
+    spotLight.target = targetObject;
+    spotLight.angle = Math.PI / 20;
+    spotLight.penumbra = 0.1;
+    spotLight.decay = 2;
+    spotLight.distance = 300;
+    spotLight.intensity = 2;
+
+    spotLight.castShadow = true;
+    spotLight.shadow.mapSize.width = 1024;
+    spotLight.shadow.mapSize.height = 1024;
+
+    spotLight.shadow.camera.near = 500;
+    spotLight.shadow.camera.far = 4000;
+    spotLight.shadow.camera.fov = 30;
+
+    this.car.add(spotLight);
+    scene.add(this.car);
 
     // Add car and Headlights to scene
     // model.then((object) => {
