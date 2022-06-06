@@ -338,18 +338,20 @@ class Game {
   }
 
   _mouse(event) {
-    // let newSpeedX;
-    // //console.log(event.clientX);
-    // if (event.clientX > this.left && event.clientX < this.right) {
-    //   newSpeedX = 0.0;
-    // } else if (event.clientX < this.left) {
-    //   newSpeedX = -1.0;
-    // } else if (event.clientX > this.right) {
-    //   newSpeedX = 1.0;
-    // } else {
-    //   newSpeedX = 0.0;
-    // }
-    // this.speedX = newSpeedX;
+     let newSpeedX;
+     if (event.clientX > this.left && event.clientX < this.right) {
+       newSpeedX = 0.0;
+     } else if (event.clientX < this.left) {
+       newSpeedX = -1.0;
+     } else if (event.clientX > this.right) {
+       newSpeedX = 1.0;
+     } else {
+       newSpeedX = 0.0;
+     }
+     if(this.speedX !== newSpeedX){
+      this.speedX = newSpeedX;
+      this._rotateCar(-this.speedX * 20 * Math.PI/180, 0.8);
+    }
   }
 
   _keydown(event) {
@@ -646,7 +648,7 @@ class Game {
     document.getElementById("crash").style.display = "grid";
     setTimeout(() => {
       document.getElementById("crash").style.display = "none";
-    }, 3000);
+    }, 1500);
     this.running = false;
     this.divGameOverScore.innerText = this.score;
     this.divGameOverDistance.innerText =
@@ -669,7 +671,10 @@ class Game {
     carBody.translateY(-0.1);
     carBody.rotateZ(45*Math.PI/180);
     carBody.rotateX(90*Math.PI/180);
-
+    
+    carBody.castShadow = true;
+    carBody.receiveShadow = true;
+    
     const carTop = new THREE.Mesh(
       new THREE.CapsuleBufferGeometry(0.2,0.4,4,40),
       new THREE.MeshStandardMaterial({ color: 0x4e4e4e })
@@ -677,6 +682,10 @@ class Game {
     carTop.translateY(0.2);
     carTop.rotateZ(45*Math.PI/180);
     carTop.rotateX(90*Math.PI/180);
+
+    carTop.castShadow = true;
+    carTop.receiveShadow = true;
+    
 
     const tailLightL = new THREE.Mesh(
       new THREE.OctahedronBufferGeometry(0.06,2),
@@ -696,6 +705,13 @@ class Game {
     tailLightR.translateX(-0.15);
     tailLightR.translateY(0.13);
     
+    tailLightL.castShadow = true;
+    tailLightL.receiveShadow = true;
+    
+    tailLightR.castShadow = true;
+    tailLightR.receiveShadow = true;
+    
+
 
     this.car = new THREE.Group();
     this.car.add(carBody);
@@ -735,9 +751,6 @@ class Game {
     // });
   }
 
-  _createCar(){
-    
-  }
 
   _initializeScene(scene, camera, replay) {
     //in game
@@ -1014,14 +1027,14 @@ class Game {
     laneLine_6.receiveShadow = true;
     laneLine_6.castShadow = false;
 
-    var geo = new THREE.PlaneGeometry(32, 32, 1);
+   /* var geo = new THREE.PlaneGeometry(32, 32, 1);
     var crash = new THREE.MeshBasicMaterial();
     var texture = new THREE.TextureLoader().load("resources/crash.png");
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.flipY = true;
     texture.repeat.set(5, 5);
-    crash.map = texture;
+    crash.map = texture;*/
 
     this.roadLineParent.add(road);
     this.roadLineParent.add(laneLine_1);
