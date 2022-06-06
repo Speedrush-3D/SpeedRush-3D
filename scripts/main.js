@@ -1,6 +1,5 @@
 import * as THREE from "../vendors/three.module.js";
-import model from "./Loader_playerCar.js";
-import {Lerp} from "./lerp.js"
+import { Lerp } from "./lerp.js";
 import { math } from "./math.js";
 import { FBXLoader } from "../vendors/FBXLoader.js";
 
@@ -14,36 +13,16 @@ window.onload = () => {
   hemiLight.position.set(200, 200, 0);
   scene.add(hemiLight);
 
-  /* const dirLight = new THREE.DirectionalLight(0xffffff);
-  dirLight.position.set(0, 200, 100);
-  dirLight.castShadow = true;
-  dirLight.shadow.camera.top = 180;
-  dirLight.shadow.camera.bottom = -100;
-  dirLight.shadow.camera.left = -120;
-  dirLight.shadow.camera.right = 120;
-  scene.add(dirLight);*/
-
-  /*const light = new THREE.PointLight( 0xffffff,2 , 100 );
-light.position.set( -8, 2, -5 );
-light.castShadow = true; // default false
-scene.add( light );
-
-//Set up shadow properties for the light
-light.shadow.mapSize.width = 512; // default
-light.shadow.mapSize.height = 512; // default
-light.shadow.camera.near = 0.5; // default
-light.shadow.camera.far = 500; // default*/
-
   const light = new THREE.PointLight(0xffffff, 2, 100);
-  light.castShadow = true; // default false
+  light.castShadow = true;
   light.position.set(20, 20, -4);
   scene.add(light);
 
   //Set up shadow properties for the light
-  light.shadow.mapSize.width = 2048; // default
-  light.shadow.mapSize.height = 2048; // default
-  light.shadow.camera.near = 1; // default
-  light.shadow.camera.far = 500; // default
+  light.shadow.mapSize.width = 2048;
+  light.shadow.mapSize.height = 2048;
+  light.shadow.camera.near = 1;
+  light.shadow.camera.far = 500;
 
   const camera = new THREE.PerspectiveCamera(
     75,
@@ -58,8 +37,6 @@ light.shadow.camera.far = 500; // default*/
   document.body.appendChild(renderer.domElement);
 
   const gameInstance = new Game(scene, camera, light);
-
-  //camera.position.z = 3;
 
   function animate() {
     requestAnimationFrame(animate);
@@ -84,14 +61,6 @@ light.shadow.camera.far = 500; // default*/
 class Game {
   LANELINE_PREFAB = new THREE.PlaneGeometry(0.09, 1);
   LANELINE_MATERIAL = new THREE.MeshStandardMaterial({ color: 0xfbf9f9 });
-
-  /* var geo = new THREE.PlaneGeometry(5, 2, 2);
-
-    var mat = new THREE.MeshBasicMaterial();
-    mat.map = new THREE.TextureLoader().load("resources/road.jpg");
-  // mat.side = THREE.BackSide;
-    this.road = new THREE.Mesh(geo, mat);
-    this.scene.add(this.road);*/
 
   ROADLINE_PREFAB = new THREE.PlaneGeometry(0.09, 32);
 
@@ -126,14 +95,6 @@ class Game {
       });
       this.running = true;
 
-      //const CarSound = new THREE.Audio(listener);
-      //audioLoader.load('sounds/engine.mp3', function(buffer){
-      // CarSound.setBuffer(buffer);
-      // CarSound.setLoop(true);
-      // CarSound.setVolume(0.5);
-      // CarSound.play();
-      // });
-
       document.getElementById("intro-panel").style.display = "none";
       document.getElementById("level-up").style.display = "none";
       document.getElementById("crash").style.display = "none";
@@ -153,21 +114,6 @@ class Game {
       document.getElementById("menu-holder").style.display = "grid";
       document.getElementById("game-over-panel").style.display = "none";
     };
-
-    /* document.getElementById("level-select-button-pause").onclick = () => {
-      const listener = new THREE.AudioListener();
-      camera.add(listener);
-      const audioLoader = new THREE.AudioLoader();
-      const backgroundSound = new THREE.Audio(listener);
-      audioLoader.load('sounds/button.mp3', function(buffer){
-        backgroundSound.setBuffer(buffer);
-        backgroundSound.setLoop(false);
-        backgroundSound.setVolume(1);
-        backgroundSound.play();
-      });
-      document.getElementById("menu-holder").style.display = "grid";
-      this.divPausePanel.style.display = "none";
-    };*/
 
     this.difficulty = 0;
     document.getElementById("easy").onclick = () => {
@@ -273,9 +219,7 @@ class Game {
             -this.lineParent.position.z,
             item.userData.pos
           );
-          //console.log(item.userData.pos);
         } else {
-          // console.log(this.lineParent.position.z)
           item.position.set(0, 0, this.lineParent.position.z);
         }
       });
@@ -283,9 +227,7 @@ class Game {
 
     this.scene = scene;
     this.camera = camera;
-    // console.log(this.difficulty);
     this._reset(false);
-    //this.obstacleCounter =0;
 
     document.addEventListener("keydown", this._keydown.bind(this));
     document.addEventListener("keyup", this._keyup.bind(this));
@@ -302,16 +244,13 @@ class Game {
   update() {
     if (!this.running) return;
     const timeDelta = this.clock.getDelta();
-    this. time += timeDelta;
+    this.time += timeDelta;
 
-    if(this.rotationLerp !==null){
+    if (this.rotationLerp !== null) {
       this.rotationLerp.update(timeDelta);
     }
 
-    //console.log(this.time);
-
     this.translateX += this.speedX * -0.05;
-    //console.log(this.translateX);
     this._checkCollisions();
     this._updateGrid();
     this._updateInfoPanel();
@@ -319,7 +258,6 @@ class Game {
 
   _changeLevel() {
     if (this.difficulty == 0) {
-      // console.log(true);
       this.light.position.set(20, 20, -4);
       this.skydome.visible = true;
       this.skydome3.visible = false;
@@ -338,19 +276,19 @@ class Game {
   }
 
   _mouse(event) {
-     let newSpeedX;
-     if (event.clientX > this.left && event.clientX < this.right) {
-       newSpeedX = 0.0;
-     } else if (event.clientX < this.left) {
-       newSpeedX = -1.0;
-     } else if (event.clientX > this.right) {
-       newSpeedX = 1.0;
-     } else {
-       newSpeedX = 0.0;
-     }
-     if(this.speedX !== newSpeedX){
+    let newSpeedX;
+    if (event.clientX > this.left && event.clientX < this.right) {
+      newSpeedX = 0.0;
+    } else if (event.clientX < this.left) {
+      newSpeedX = -1.0;
+    } else if (event.clientX > this.right) {
+      newSpeedX = 1.0;
+    } else {
+      newSpeedX = 0.0;
+    }
+    if (this.speedX !== newSpeedX) {
       this.speedX = newSpeedX;
-      this._rotateCar(-this.speedX * 20 * Math.PI/180, 0.8);
+      this._rotateCar((-this.speedX * 20 * Math.PI) / 180, 0.8);
     }
   }
 
@@ -394,17 +332,15 @@ class Game {
       default:
         return;
     }
-    if(this.speedX !== newSpeedX){
+    if (this.speedX !== newSpeedX) {
       this.speedX = newSpeedX;
-      this._rotateCar(-this.speedX * 20 * Math.PI/180, 0.8);
+      this._rotateCar((-this.speedX * 20 * Math.PI) / 180, 0.8);
     }
-    
-    //console.log(this.speedX);
   }
 
   _keyup() {
     this.speedX = 0;
-    this._rotateCar(0,0.5);
+    this._rotateCar(0, 0.5);
   }
 
   _changeView(camera) {
@@ -421,7 +357,6 @@ class Game {
   }
 
   _updateGrid() {
-    // console.log(this.speedZ);
     this.skydome.rotateY(0.1 * (Math.PI / 180));
     this.skydome2.rotateY(0.1 * (Math.PI / 180));
     this.skydome3.rotateY(0.1 * (Math.PI / 180));
@@ -435,25 +370,20 @@ class Game {
     }
 
     this.speedIncrementor = this.speedIncrementor + 0.15;
-    //this.grid.material.uniforms.time.value = this.time;
-    // console.log(this.speedIncrementor);
     if (this.difficulty == 1 && this.speedZ < 9) {
       this.speedZ = this.speedZ + 0.00045;
-      //console.log(this.speedZ);
     } else if (this.difficulty == 2 && this.speedZ < 12) {
       this.speedZ = this.speedZ + 0.00045;
     }
 
     this.objectsParent.position.z =
-      this.speedZ * this.time + this.speedIncrementor; //multiply by something to increase speed
+      this.speedZ * this.time + this.speedIncrementor;
     this.lineParent.position.z =
       this.speedZ * this.time + 1.5 * this.speedIncrementor;
     this.treesParent.position.z =
       this.speedZ * this.time + this.speedIncrementor;
-    // this.grid.material.uniforms.translateX.value = this.translateX;
 
     if (this.translateX < 2.15 && this.translateX > -2.15) {
-      //console.log(this.grid.material.uniforms.translateX.value)
       this.objectsParent.position.x = this.translateX;
       this.lineParent.position.x = this.translateX;
       this.treesParent.position.x = this.translateX;
@@ -461,9 +391,7 @@ class Game {
     }
 
     this.objectsParent.traverse((child) => {
-      //if (child instanceof THREE.Mesh) {
       const childZPos = child.position.z + this.objectsParent.position.z;
-      //console.log(this.objectsParent.position.z);
       if (childZPos > 3) {
         if (child.name == "obs") {
           this.score += 5;
@@ -476,7 +404,6 @@ class Game {
           );
         }
       }
-      // }
     });
 
     this.lineParent.traverse((child) => {
@@ -516,14 +443,10 @@ class Game {
         document.getElementById("level-up").style.display = "none";
       }, 2000);
     }
-
-    //console.log(this.speedZ);
   }
 
   _reset(replay) {
     this.running = false;
-
-    //console.log(this.difficulty);
 
     if (this.difficulty == 0) {
       this.speedZ = 5;
@@ -533,7 +456,6 @@ class Game {
       this.speedZ = 10;
     }
 
-    //this.speedZ =5;
     this.speedX = 0;
     this.translateX = 0;
     this.score = 0;
@@ -556,63 +478,36 @@ class Game {
     this._changeLevel();
   }
 
-  _rotateCar(targetRotation, delay){
+  _rotateCar(targetRotation, delay) {
     const $this = this;
     this.rotationLerp = new Lerp(this.car.rotation.y, targetRotation, delay)
-      .onUpdate((value)=>{$this.car.rotation.y = value})
-      .onFinish(()=> {$this.rotationLerp = null});
+      .onUpdate((value) => {
+        $this.car.rotation.y = value;
+      })
+      .onFinish(() => {
+        $this.rotationLerp = null;
+      });
   }
 
   _checkCollisions() {
-    /*  this.objectsParent.traverse((child) =>{
-          if(child.userData.type == "obstacle"){
-            const childZPos = child.position.z + this.objectsParent.position.z;
-            //console.log(childZPos);
-            const thresholdX = this.COLLOSION_THRESHOLD +child.scale.x/2.5;
-            const thresholdZ = this.COLLOSION_THRESHOLD + child.scale.z/2.5;
-            if(childZPos > -thresholdZ && Math.abs(child.position.x + this.translateX) < thresholdX){
-              console.log("collison");
-            }
-          }
-        }
-      );*/
-
-    //console.log(this.objectsParent.position.x, "parent");
     this.objectsParent.traverse((child) => {
       if (child.name == "obs") {
-        /*const childZPos = child.position.z + this.objectsParent.position.z;
-        const thresholdX = this.COLLOSION_THRESHOLD + child.scale.x / 2;
-        const thresholdZ = this.COLLOSION_THRESHOLD + child.scale.z / 2;*/
-        // console.log(child.position.x, "child", this.translateX, "trans");
-
-        /* if(child.position.z+this.objectsParent.position.z>0.25){
-            console.log("z");
-          }*/
-        /*if( Math.abs(child.position.x+this.translateX)<0.55){
-            console.log("x")
-          }*/
         if (
           child.position.z + this.objectsParent.position.z > -2.3 &&
           Math.abs(child.position.x + this.translateX) <= 0.7
         ) {
           this.collisionCount = this.collisionCount + 1;
           this.prevTime = this.time;
-          // console.log(Math.abs(child.position.x + this.translateX), "x");
-          //console.log(child.position.z + this.objectsParent.position.z, "z");
         }
 
         if (this.time - this.prevTime > 0.75) {
           this.collisionCount = 0;
         }
-        //console.log(this.collisionCount);
 
         if (this.collisionCount > 5) {
-          //console.log("collison");
-
           this._gameOver();
 
           const listener = new THREE.AudioListener();
-          //camera.add(listener);
           const audioLoader = new THREE.AudioLoader();
           const backgroundSound = new THREE.Audio(listener);
           audioLoader.load("sounds/crash.mp3", function (buffer) {
@@ -621,10 +516,7 @@ class Game {
             backgroundSound.setVolume(1);
             backgroundSound.play();
           });
-        } /*else{
-            this.score +=1;
-            this.divScore.innerText = this.score;
-          }*/
+        }
       }
     });
   }
@@ -640,7 +532,6 @@ class Game {
     this.clock.stop();
     setTimeout(() => {
       this.divPausePanel.style.display = "grid";
-      //this._reset(true);
     }, 10);
   }
 
@@ -660,40 +551,36 @@ class Game {
   }
 
   _createPlayerCar(scene) {
-    // const geometry = new THREE.BoxGeometry();
-    // const material = new THREE.MeshBasicMaterial({ color: 0xfbf9f9 });
-
     const carBody = new THREE.Mesh(
-      new THREE.CapsuleBufferGeometry(0.45,0.7,4,4),
+      new THREE.CapsuleBufferGeometry(0.45, 0.7, 4, 4),
       this.LANELINE_MATERIAL
     );
 
     carBody.translateY(-0.1);
-    carBody.rotateZ(45*Math.PI/180);
-    carBody.rotateX(90*Math.PI/180);
-    
+    carBody.rotateZ((45 * Math.PI) / 180);
+    carBody.rotateX((90 * Math.PI) / 180);
+
     carBody.castShadow = true;
     carBody.receiveShadow = true;
-    
+
     const carTop = new THREE.Mesh(
-      new THREE.CapsuleBufferGeometry(0.2,0.4,4,40),
+      new THREE.CapsuleBufferGeometry(0.2, 0.4, 4, 40),
       new THREE.MeshStandardMaterial({ color: 0x4e4e4e })
     );
     carTop.translateY(0.2);
-    carTop.rotateZ(45*Math.PI/180);
-    carTop.rotateX(90*Math.PI/180);
+    carTop.rotateZ((45 * Math.PI) / 180);
+    carTop.rotateX((90 * Math.PI) / 180);
 
     carTop.castShadow = true;
     carTop.receiveShadow = true;
-    
 
     const tailLightL = new THREE.Mesh(
-      new THREE.OctahedronBufferGeometry(0.06,2),
+      new THREE.OctahedronBufferGeometry(0.06, 2),
       new THREE.MeshStandardMaterial({ color: 0xff0000 })
     );
 
     const tailLightR = new THREE.Mesh(
-      new THREE.OctahedronBufferGeometry(0.06,10),
+      new THREE.OctahedronBufferGeometry(0.06, 10),
       new THREE.MeshStandardMaterial({ color: 0xff0000 })
     );
 
@@ -704,14 +591,12 @@ class Game {
     tailLightR.translateZ(0.6);
     tailLightR.translateX(-0.15);
     tailLightR.translateY(0.13);
-    
+
     tailLightL.castShadow = true;
     tailLightL.receiveShadow = true;
-    
+
     tailLightR.castShadow = true;
     tailLightR.receiveShadow = true;
-    
-
 
     this.car = new THREE.Group();
     this.car.add(carBody);
@@ -719,13 +604,12 @@ class Game {
     this.car.add(tailLightL);
     this.car.add(tailLightR);
 
-    // Create Car Headlights
     const targetObject = new THREE.Object3D();
-    targetObject.position.set(0,0,-200);
+    targetObject.position.set(0, 0, -200);
     scene.add(targetObject);
 
-    const spotLight = new THREE.SpotLight( 0xddffff );
-    spotLight.position.set( 0, 0, -0.1 );
+    const spotLight = new THREE.SpotLight(0xddffff);
+    spotLight.position.set(0, 0, -0.1);
     spotLight.target = targetObject;
     spotLight.angle = Math.PI / 20;
     spotLight.penumbra = 0.1;
@@ -743,22 +627,12 @@ class Game {
 
     this.car.add(spotLight);
     scene.add(this.car);
-
-    // Add car and Headlights to scene
-    // model.then((object) => {
-    //   object.add(spotLight);
-    //   scene.add(object);
-    // });
   }
 
-
   _initializeScene(scene, camera, replay) {
-    //in game
-
     if (!replay) {
       this._createSky();
       this._createPlayerCar(scene);
-      //this._createGrid(scene);
       this.objectsParent = new THREE.Group();
       this.objectsParent.userData = { type: "obstacle_parent" };
 
@@ -783,7 +657,6 @@ class Game {
       for (let i = 0; i < 7; i++) {
         this._spawnObstacle();
       }
-      // console.log(this.objectsParent);
 
       let pos1 = 0;
       let pos2 = 0;
@@ -807,14 +680,11 @@ class Game {
       camera.rotateX((-20 * Math.PI) / 180);
       camera.position.set(0, 1.5, 3);
     } else {
-      // this.Crash.visible = false;
       this.objectsParent.traverse((item) => {
         if (item.name == "obs") {
-          //console.log("kid");
           this._setupObstacle(item);
         } else if (item.userData.type == "obstacle_parent") {
           item.position.set(0, 0, 0);
-          //console.log("parent");
         }
       });
 
@@ -829,24 +699,14 @@ class Game {
       this.lineParent.traverse((item) => {
         if (item instanceof THREE.Mesh) {
           this._setupLaneLines(item, item.userData.type, 0, item.userData.pos);
-          //console.log(item.userData.pos);
         } else {
           item.position.set(0, 0, 0);
         }
       });
     }
-
-    //camera.rotateX((-75 * Math.PI) / 180); //top view .. needs work
-    //camera.position.set(0, 8,2);
   }
 
   _spawnTrees() {
-    /* const obj = new THREE.Mesh(this.OBSTACLE_PREFAB, this.TREE_MATERIAL);
-    obj.scale.set(0.25, 1, 0.25);
-    this._setupTrees(obj);
-    obj.userData = { type: "Tree" };
-    obj.name = "Tree";
-    this.treesParent.add(obj);*/
     const obj = new THREE.Group();
     const loader = new FBXLoader();
 
@@ -869,14 +729,8 @@ class Game {
         pathStr = "resources/nature_pack/FBX/Tree1.fbx";
         break;
     }
-    //console.log(rand);
     loader.load(pathStr, function (fbx) {
       fbx.scale.setScalar(0.007);
-
-      /* fbx.quaternion.setFromAxisAngle(
-        new THREE.Vector3(1, 0, 0),
-        -90 * (Math.PI / 180)
-      );*/
 
       fbx.traverse((c) => {
         let materials = c.material;
@@ -904,21 +758,10 @@ class Game {
 
   _setupTrees(obj, refZPos = 0) {
     let lane = math._randomInt(0, 2);
-    //console.log(lane);
     if (lane == 0) {
-      obj.position.set(
-        -5.5,
-        //obj.scale.y * 0.5,
-        0,
-        refZPos - 2 - math._randomFloat(10, 30)
-      );
+      obj.position.set(-5.5, 0, refZPos - 2 - math._randomFloat(10, 30));
     } else if (lane == 1) {
-      obj.position.set(
-        5.5,
-        //obj.scale.y * 0.5,
-        0,
-        refZPos - 2 - math._randomFloat(10, 30)
-      );
+      obj.position.set(5.5, 0, refZPos - 2 - math._randomFloat(10, 30));
     }
   }
 
@@ -929,12 +772,7 @@ class Game {
     );
     leftLine.rotation.set(-Math.PI / 2, Math.PI / 2000, Math.PI);
 
-    leftLine.position.set(
-      -2.45,
-      //leftLine.scale.y*0.5,
-      0,
-      -1
-    );
+    leftLine.position.set(-2.45, 0, -1);
 
     this.roadLineParent.add(leftLine);
 
@@ -944,12 +782,7 @@ class Game {
     );
     rightLine.rotation.set(-Math.PI / 2, Math.PI / 2000, Math.PI);
 
-    rightLine.position.set(
-      2.45,
-      //rightLine.scale.y*0.5,
-      0,
-      -1
-    );
+    rightLine.position.set(2.45, 0, -1);
 
     this.roadLineParent.add(rightLine);
 
@@ -1027,15 +860,6 @@ class Game {
     laneLine_6.receiveShadow = true;
     laneLine_6.castShadow = false;
 
-   /* var geo = new THREE.PlaneGeometry(32, 32, 1);
-    var crash = new THREE.MeshBasicMaterial();
-    var texture = new THREE.TextureLoader().load("resources/crash.png");
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.flipY = true;
-    texture.repeat.set(5, 5);
-    crash.map = texture;*/
-
     this.roadLineParent.add(road);
     this.roadLineParent.add(laneLine_1);
     this.roadLineParent.add(laneLine_2);
@@ -1067,40 +891,17 @@ class Game {
     } else {
       pos = refZPos - 12;
     }
-    //console.log(pos);
 
     if (lane == 0) {
-      laneLine.position.set(
-        -1.2,
-        //laneLine.scale.y*0.5,
-        0,
-        //refZPos - 16
-        pos
-      );
+      laneLine.position.set(-1.2, 0, pos);
     } else if (lane == 1) {
-      laneLine.position.set(
-        0,
-        //laneLine.scale.y*0.5,
-        0,
-        pos
-      );
+      laneLine.position.set(0, 0, pos);
     } else if (lane == 2) {
-      laneLine.position.set(
-        1.2,
-        //laneLine.scale.y*0.5,
-        0,
-        pos
-      );
+      laneLine.position.set(1.2, 0, pos);
     }
   }
 
   _spawnObstacle() {
-    /*const obj = new THREE.Mesh(this.OBSTACLE_PREFAB, this.OBSTACLE_MATERIAL);
-        obj.scale.set(0.5, 0.5, 0.5);
-        this._setupObstacle(obj);
-        obj.userData = { type: "obstacle" };
-        this.objectsParent.add(obj);*/
-
     const obj = new THREE.Group();
     const loader = new FBXLoader();
 
@@ -1129,7 +930,6 @@ class Game {
         pathStr = "resources/car_pack/FBX/NormalCar1.fbx";
         break;
     }
-    //console.log(rand);
     loader.load(pathStr, function (fbx) {
       fbx.scale.setScalar(0.0045);
 
@@ -1160,26 +960,15 @@ class Game {
     obj.name = "obs";
     this._setupObstacle(obj);
     this.objectsParent.add(obj);
-
-    /*model_obstacle.then(obj =>{
-     // let obj = new model_obstacle();
-          //console.log(obj);  
-          this._setupObstacle(obj);
-          obj.userData = { type: "obstacle" };
-          this.objectsParent.add(obj);
-      })
-      console.log(this.objectsParent);*/
   }
 
   _createSky() {
-    //var geometry = new THREE.SphereGeometry(5, 100, 60);
     var geometry = new THREE.SphereGeometry(30, 100, 60);
 
     var material = new THREE.MeshBasicMaterial();
     material.map = new THREE.TextureLoader().load("resources/sky.jpg");
     material.side = THREE.BackSide;
     this.skydome = new THREE.Mesh(geometry, material);
-    //this.skydome.rotateX(900*(Math.PI/180));
 
     var geometry2 = new THREE.SphereGeometry(8.5, 100, 60);
 
@@ -1187,8 +976,6 @@ class Game {
     material2.map = new THREE.TextureLoader().load("resources/night_sky.jpg");
     material2.side = THREE.BackSide;
     this.skydome2 = new THREE.Mesh(geometry2, material2);
-    //this.skydome.rotateX(900*(Math.PI/180));
-    //this.scene.add(this.skydome2);
 
     var geometry3 = new THREE.SphereGeometry(13, 100, 60);
     var material3 = new THREE.MeshBasicMaterial();
@@ -1197,9 +984,6 @@ class Game {
     );
     material3.side = THREE.BackSide;
     this.skydome3 = new THREE.Mesh(geometry3, material3);
-    //this.skydome.rotateX(900*(Math.PI/180));
-    //this.scene.add(this.skydome3);
-    // this.skydome = this.skydome2;
     this.scene.add(this.skydome);
     this.scene.add(this.skydome2);
     this.scene.add(this.skydome3);
@@ -1211,8 +995,6 @@ class Game {
 
     this.posArr[this.obstacleCounter] = currZ;
 
-    //this.posArr = this.posArr.sort((a,b) => b-a);
-
     for (let j = 0; j < this.posArr.length; j++) {
       for (let i = 0; i < this.posArr.length; i++) {
         if (this.posArr[i] - currZ - this.objectsParent.position.z < 0.75) {
@@ -1222,147 +1004,19 @@ class Game {
       }
     }
 
-    //console.log(this.posArr);
-    //console.log(-this.objectsParent.position.z, "first");
-    //console.log(-this.obstacleCounter-refZPos, "sec");
-
-    // let dist = this.obstacleCounter - currZ;
-
-    /*while(dist <= 0 ){
-              currZ = refZPos - 16 - this._randomFloat(0,16);
-              dist = this.obstacleCounter - currZ;
-          }*/ //potential lag point
-
-    // console.log(dist);
-
     if (lane == 0) {
-      //1st lane from left
-      obj.position.set(
-        -2,
-        //obj.scale.y * 0.5,
-        0,
-        //refZPos - 16 - math._randomFloat(10, 16)
-        currZ
-      );
-      //console.log(refZPos);
+      obj.position.set(-2, 0, currZ);
     } else if (lane == 1) {
-      //2nd lane from left
-      obj.position.set(
-        -0.75,
-        //obj.scale.y * 0.5,
-        0,
-        //refZPos - 16 - this._randomFloat(0,4)
-        //refZPos - 16 - math._randomFloat(0, 16)
-        currZ
-      );
+      obj.position.set(-0.75, 0, currZ);
     } else if (lane == 2) {
-      obj.position.set(
-        0.75,
-        //obj.scale.y * 0.5,
-        0,
-        //refZPos - 16 - this._randomFloat(0,4)
-        //refZPos - 16 - math._randomFloat(10, 16)
-        currZ
-      );
+      obj.position.set(0.75, 0, currZ);
     } else if (lane == 3) {
-      obj.position.set(
-        2,
-        //obj.scale.y * 0.5,
-        0,
-        //refZPos - 16 - this._randomFloat(0,4)
-        //refZPos - 16 - math._randomFloat(0, 16)
-        currZ
-      );
+      obj.position.set(2, 0, currZ);
     }
-    //obj.translateY(0.4);
 
-    // console.log(this.obstacleCounter);
     this.obstacleCounter = this.obstacleCounter + 1;
     if (this.obstacleCounter == this.posArr.length) {
       this.obstacleCounter = 0;
     }
   }
 }
-
-/* _createGrid() {
-    let divisions = 4;
-    let gridLimit = 8;
-    this.grid = new THREE.GridHelper(
-      gridLimit * 2,
-      divisions,
-      0x000000,
-      0x000000
-    );
-    const moveableZ = [];
-    const moveableX = [];
-
-    for (let i = 0; i <= divisions; i++) {
-      moveableX.push(0, 0, 1, 1);
-      moveableZ.push(1, 1, 0, 0); // move horizontal lines only (1 - point is moveable)
-    }
-    this.grid.geometry.setAttribute(
-      "moveableZ",
-      new THREE.BufferAttribute(new Uint8Array(moveableZ), 1)
-    );
-
-    this.grid.geometry.setAttribute(
-      "moveableX",
-      new THREE.BufferAttribute(new Uint8Array(moveableX), 1)
-    );
-    this.grid.material = new THREE.ShaderMaterial({
-      uniforms: {
-        speedZ: {
-          value: this.speedZ,
-        },
-        translateX: {
-          value: this.translateX,
-        },
-        gridLimits: {
-          value: new THREE.Vector2(-gridLimit, gridLimit),
-        },
-        time: {
-          value: 0,
-        },
-      },
-      vertexShader: `
-              uniform float time;
-              uniform vec2 gridLimits;
-              uniform float speedZ;
-              uniform float translateX;
-  
-              attribute float moveableZ;
-              attribute float moveableX;
-  
-              varying vec3 vColor;
-          
-              void main() {
-              vColor = color;
-              float limLen = gridLimits.y - gridLimits.x;
-              vec3 pos = position;
-              if (floor(moveableX + 0.5) > 0.5) { // if a point has "moveableZ" attribute = 1 
-                  float xDist = translateX;
-                  float curXPos = mod((pos.x + xDist) - gridLimits.x, limLen) + gridLimits.x;
-                  pos.x = curXPos;
-              }
-  
-              if (floor(moveableZ + 0.5) > 0.5) { // if a point has "moveableZ" attribute = 1 
-                float zDist = speedZ * time;
-                float curZPos = mod((pos.z + zDist) - gridLimits.x, limLen) + gridLimits.x;
-                pos.z = curZPos;
-            }
-              gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-              }
-          `,
-      fragmentShader: `
-              varying vec3 vColor;
-          
-              void main() {
-              gl_FragColor = vec4(vColor, 1.); // r, g, b channels + alpha (transparency)
-              }
-          `,
-      vertexColors: THREE.VertexColors,
-    });
-    this.grid.scale.set(0.45, 1, 5);
-
-    //scene.add(this.grid);
-  }*/
