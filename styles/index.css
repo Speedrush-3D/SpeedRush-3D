@@ -298,3 +298,33 @@ body {
 
   font-size: 44.44px;
 }
+
+.tooltip {
+  position: inherit;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+  font-size:36px;
+}
+
+.tooltip .tooltiptext {
+  font-size: 15px;
+  visibility: hidden;
+  width: max-content;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 10px;
+  padding: 10px 5px;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
