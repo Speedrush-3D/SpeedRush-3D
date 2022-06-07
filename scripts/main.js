@@ -9,7 +9,7 @@ window.onload = () => {
   scene.background = new THREE.Color(0xa0a0a0);
   scene.fog = new THREE.Fog(0xa0a0a0, 200, 1000);
 
-  const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.2);
+  const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.25);
   hemiLight.position.set(200, 200, 0);
   scene.add(hemiLight);
 
@@ -128,6 +128,7 @@ class Game {
         backgroundSound.play();
       });
       this.difficulty = 0;
+      this.speedZ = 5;
       this._changeLevel();
       this.running = true;
       this.clock.start();
@@ -145,6 +146,7 @@ class Game {
         backgroundSound.play();
       });
       this.difficulty = 1;
+      this.speedZ = 8;
       this._changeLevel();
       this.running = true;
       this.clock.start();
@@ -162,6 +164,7 @@ class Game {
         backgroundSound.play();
       });
       this.difficulty = 2;
+      this.speedZ = 10;
       this._changeLevel();
       this.running = true;
       this.clock.start();
@@ -229,14 +232,16 @@ class Game {
     this.camera = camera;
     this._reset(false);
 
+    
+    this.windowSize = window.innerWidth;
+    this.left = this.windowSize / 3;
+    this.right = this.windowSize / 3 + this.windowSize / 3;
+
     document.addEventListener("keydown", this._keydown.bind(this));
     document.addEventListener("keyup", this._keyup.bind(this));
 
     document.addEventListener("mousemove", this._mouse.bind(this));
 
-    let windowSize = window.innerWidth;
-    this.left = windowSize / 3;
-    this.right = windowSize / 3 + windowSize / 3;
 
     this.rotationLerp = null;
   }
@@ -277,41 +282,49 @@ class Game {
 
   _mouse(event) {
     let newSpeedX;
+
+    if(event.clientX < this.windowSize && event.clientX > 0 ){
     if (event.clientX > this.left && event.clientX < this.right) {
       newSpeedX = 0.0;
     } else if (event.clientX < this.left) {
-      newSpeedX = -1.0;
+      newSpeedX = -1.2;
     } else if (event.clientX > this.right) {
-      newSpeedX = 1.0;
+      newSpeedX = 1.2;
     } else {
       newSpeedX = 0.0;
     }
-    if (this.speedX !== newSpeedX) {
-      this.speedX = newSpeedX;
-      this._rotateCar((-this.speedX * 20 * Math.PI) / 180, 0.8);
-    }
+
+  }else{
+    newSpeedX = 0.0;
+
   }
+
+  if (this.speedX !== newSpeedX) {
+    this.speedX = newSpeedX;
+    this._rotateCar((-this.speedX * 20 * Math.PI) / 180, 0.5);
+  }
+}
 
   _keydown(event) {
     let newSpeedX;
     switch (event.key) {
       case "ArrowLeft":
-        newSpeedX = -1.0;
+        newSpeedX = -1.2;
         break;
       case "ArrowRight":
-        newSpeedX = 1.0;
+        newSpeedX = 1.2;
         break;
       case "a":
-        newSpeedX = -1.0;
+        newSpeedX = -1.2;
         break;
       case "A":
-        newSpeedX = -1.0;
+        newSpeedX = -1.2;
         break;
       case "d":
-        newSpeedX = 1.0;
+        newSpeedX = 1.2;
         break;
       case "D":
-        newSpeedX = 1.0;
+        newSpeedX = 1.2;
         break;
       case "P":
         this._pause();
@@ -334,7 +347,7 @@ class Game {
     }
     if (this.speedX !== newSpeedX) {
       this.speedX = newSpeedX;
-      this._rotateCar((-this.speedX * 20 * Math.PI) / 180, 0.8);
+      this._rotateCar((-this.speedX * 20 * Math.PI) / 180, 0.5);
     }
   }
 
@@ -504,7 +517,7 @@ class Game {
           this.collisionCount = 0;
         }
 
-        if (this.collisionCount > 5) {
+        if (this.collisionCount > 8) {
           this._gameOver();
 
           const listener = new THREE.AudioListener();
@@ -605,17 +618,17 @@ class Game {
     this.car.add(tailLightR);
 
     const targetObject = new THREE.Object3D();
-    targetObject.position.set(0, 0, -200);
+    targetObject.position.set(0, -25, -36);
     scene.add(targetObject);
 
     const spotLight = new THREE.SpotLight(0xddffff);
-    spotLight.position.set(0, 0, -0.1);
+    spotLight.position.set(0, 1, -0.5);
     spotLight.target = targetObject;
-    spotLight.angle = Math.PI / 20;
+    spotLight.angle = Math.PI / 4.5;
     spotLight.penumbra = 0.1;
     spotLight.decay = 2;
     spotLight.distance = 300;
-    spotLight.intensity = 2;
+    spotLight.intensity = 1.5;
 
     spotLight.castShadow = true;
     spotLight.shadow.mapSize.width = 1024;
@@ -623,7 +636,7 @@ class Game {
 
     spotLight.shadow.camera.near = 500;
     spotLight.shadow.camera.far = 4000;
-    spotLight.shadow.camera.fov = 30;
+    spotLight.shadow.camera.fov = 50;   
 
     this.car.add(spotLight);
     scene.add(this.car);
@@ -759,13 +772,24 @@ class Game {
   _setupTrees(obj, refZPos = 0) {
     let lane = math._randomInt(0, 2);
     if (lane == 0) {
-      obj.position.set(-5.5, 0, refZPos - 2 - math._randomFloat(10, 30));
+      obj.position.set(-5.5, -0.1, refZPos - 2 - math._randomFloat(10, 30));
     } else if (lane == 1) {
-      obj.position.set(5.5, 0, refZPos - 2 - math._randomFloat(10, 30));
+      obj.position.set(5.5, -0.1, refZPos - 2 - math._randomFloat(10, 30));
     }
   }
 
   _spawnRoadLines() {
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(20000, 20000, 10, 10),
+      new THREE.MeshStandardMaterial({
+          color: 0x7CFC00,
+        }));
+    ground.castShadow = false;
+    ground.receiveShadow = true;
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.set(0,-0.1,0)
+    this.scene.add(ground);
+
     const leftLine = new THREE.Mesh(
       this.ROADLINE_PREFAB,
       this.LANELINE_MATERIAL
@@ -970,18 +994,16 @@ class Game {
     material.side = THREE.BackSide;
     this.skydome = new THREE.Mesh(geometry, material);
 
-    var geometry2 = new THREE.SphereGeometry(8.5, 100, 60);
+    var geometry2 = new THREE.SphereGeometry(15, 100, 60);
 
     var material2 = new THREE.MeshBasicMaterial();
     material2.map = new THREE.TextureLoader().load("resources/night_sky.jpg");
     material2.side = THREE.BackSide;
     this.skydome2 = new THREE.Mesh(geometry2, material2);
 
-    var geometry3 = new THREE.SphereGeometry(13, 100, 60);
+    var geometry3 = new THREE.SphereGeometry(20, 100, 60);
     var material3 = new THREE.MeshBasicMaterial();
-    material3.map = new THREE.TextureLoader().load(
-      "resources/afternoon_sky.jpg"
-    );
+    material3.map = new THREE.TextureLoader().load("resources/afternoon_sky.jpg");
     material3.side = THREE.BackSide;
     this.skydome3 = new THREE.Mesh(geometry3, material3);
     this.scene.add(this.skydome);
