@@ -383,7 +383,11 @@ class Game {
     }
 
     this.speedIncrementor = this.speedIncrementor + 0.15;
-    if (this.difficulty == 1 && this.speedZ < 9) {
+
+    if(this.difficulty == 0 && this.speed < 7){
+      this.speedZ =this.speedZ + 0.00045;
+    }
+    else if (this.difficulty == 1 && this.speedZ < 9) {
       this.speedZ = this.speedZ + 0.00045;
     } else if (this.difficulty == 2 && this.speedZ < 12) {
       this.speedZ = this.speedZ + 0.00045;
