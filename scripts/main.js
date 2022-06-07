@@ -525,7 +525,7 @@ class Game {
           this.collisionCount = 0;
         }
 
-        if (this.collisionCount > 8) {
+        if (this.collisionCount > 6) {
           this._gameOver();
 
           const listener = new THREE.AudioListener();
