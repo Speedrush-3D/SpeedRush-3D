@@ -400,7 +400,11 @@ class Game {
     this.treesParent.position.z =
       this.speedZ * this.time + this.speedIncrementor;
 
-    if (this.translateX < 2.15 && this.translateX > -2.15) {
+    if (this.translateX > 2.1){
+      this.translateX =2.0;
+    }else if(this.translateX < -2.1) {
+      this.translateX =-2.0;        
+    }else{
       this.objectsParent.position.x = this.translateX;
       this.lineParent.position.x = this.translateX;
       this.treesParent.position.x = this.translateX;
