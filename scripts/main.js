@@ -77,10 +77,14 @@ class Game {
     this.divGameOverPanel = document.getElementById("game-over-panel");
     this.divGameOverScore = document.getElementById("game-over-score");
     this.divGameOverDistance = document.getElementById("game-over-distance");
+    this.divGameOverHighScore = document.getElementById("game-over-high-score");
+
 
     this.divPausePanel = document.getElementById("pause-panel");
     this.divPauseScore = document.getElementById("pause-score");
     this.divPauseDistance = document.getElementById("pause-distance");
+    this.divPauseHighScore = document.getElementById("pause-high-score");
+
 
     document.getElementById("start-button").onclick = () => {
       const listener = new THREE.AudioListener();
@@ -242,7 +246,7 @@ class Game {
 
     document.addEventListener("mousemove", this._mouse.bind(this));
 
-
+    this.highScore = 0;
     this.rotationLerp = null;
   }
 
@@ -468,7 +472,6 @@ class Game {
 
   _reset(replay) {
     this.running = false;
-
     if (this.difficulty == 0) {
       this.speedZ = 5;
     } else if (this.difficulty == 1) {
@@ -550,6 +553,7 @@ class Game {
     this.running = false;
     this.divPauseScore.innerText = this.score;
     this.divPauseDistance.innerText = this.objectsParent.position.z.toFixed(0);
+    this.divPauseHighScore.innerText = this.highScore;
     this.clock.stop();
     setTimeout(() => {
       this.divPausePanel.style.display = "grid";
@@ -557,18 +561,37 @@ class Game {
   }
 
   _gameOver() {
+    
+    if(this.highScore < this.score){
+      this.highScore = this.score;
+      document.getElementById("new-high").style.display ="grid";
+      document.getElementById("new-high_").style.display ="grid";
+
+      setTimeout(() => {
+        document.getElementById("new-high").style.display = "none";
+        document.getElementById("new-high_").style.display = "none";
+
+      }, 6000);
+
+
+    }
+    
     document.getElementById("crash").style.display = "grid";
     setTimeout(() => {
       document.getElementById("crash").style.display = "none";
     }, 1500);
     this.running = false;
     this.divGameOverScore.innerText = this.score;
-    this.divGameOverDistance.innerText =
-      this.objectsParent.position.z.toFixed(0);
+    this.divGameOverDistance.innerText =this.objectsParent.position.z.toFixed(0);
+    this.divGameOverHighScore.innerText = this.highScore;
     setTimeout(() => {
       this.divGameOverPanel.style.display = "grid";
       this._reset(true);
     }, 1000);
+
+  
+
+
   }
 
   _createPlayerCar(scene) {

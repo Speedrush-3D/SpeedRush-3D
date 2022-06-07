@@ -112,7 +112,9 @@ body {
 #game-over-score-row,
 #game-over-distance-row,
 #paused-score-row,
-#paused-distance-row {
+#paused-distance-row,
+#paused-high-score-row ,
+#game-over-high-score-row{
   display: flex;
   justify-content: center;
   margin-bottom: 1rem;
@@ -125,10 +127,29 @@ body {
   cursor: pointer;
 }
 
+#new-high,
+#new-high_{
+  font-size: 0.75rem;
+  transform: rotate(-45deg);
+  margin-left: 0.0rem;
+  animation: blinker 1s linear infinite;
+  padding-left: 0.9rem;
+  padding-right: 0.9rem;
+  display: none;
+}
+
+@keyframes blinker {
+  50% {
+    transform: rotate(45deg);
+  }
+}
+
 #game-over-score,
 #game-over-distance,
 #pause-score,
-#pause-distance {
+#pause-distance,
+#pause-high-score,
+#game-over-high-score{
   margin-left: 0.5rem;
 }
 
