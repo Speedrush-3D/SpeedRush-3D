@@ -113,8 +113,8 @@ body {
 #game-over-distance-row,
 #paused-score-row,
 #paused-distance-row,
-#paused-high-score-row ,
-#game-over-high-score-row{
+#paused-high-score-row,
+#game-over-high-score-row {
   display: flex;
   justify-content: center;
   margin-bottom: 1rem;
@@ -128,10 +128,10 @@ body {
 }
 
 #new-high,
-#new-high_{
+#new-high_ {
   font-size: 0.75rem;
   transform: rotate(-45deg);
-  margin-left: 0.0rem;
+  margin-left: 0rem;
   animation: blinker 1s linear infinite;
   padding-left: 0.9rem;
   padding-right: 0.9rem;
@@ -149,7 +149,7 @@ body {
 #pause-score,
 #pause-distance,
 #pause-high-score,
-#game-over-high-score{
+#game-over-high-score {
   margin-left: 0.5rem;
 }
 

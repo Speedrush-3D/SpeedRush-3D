@@ -79,12 +79,10 @@ class Game {
     this.divGameOverDistance = document.getElementById("game-over-distance");
     this.divGameOverHighScore = document.getElementById("game-over-high-score");
 
-
     this.divPausePanel = document.getElementById("pause-panel");
     this.divPauseScore = document.getElementById("pause-score");
     this.divPauseDistance = document.getElementById("pause-distance");
     this.divPauseHighScore = document.getElementById("pause-high-score");
-
 
     document.getElementById("start-button").onclick = () => {
       const listener = new THREE.AudioListener();
@@ -236,7 +234,6 @@ class Game {
     this.camera = camera;
     this._reset(false);
 
-    
     this.windowSize = window.innerWidth;
     this.left = this.windowSize / 3;
     this.right = this.windowSize / 3 + this.windowSize / 3;
@@ -287,27 +284,25 @@ class Game {
   _mouse(event) {
     let newSpeedX;
 
-    if(event.clientX < this.windowSize && event.clientX > 0 ){
-    if (event.clientX > this.left && event.clientX < this.right) {
-      newSpeedX = 0.0;
-    } else if (event.clientX < this.left) {
-      newSpeedX = -1.2;
-    } else if (event.clientX > this.right) {
-      newSpeedX = 1.2;
+    if (event.clientX < this.windowSize && event.clientX > 0) {
+      if (event.clientX > this.left && event.clientX < this.right) {
+        newSpeedX = 0.0;
+      } else if (event.clientX < this.left) {
+        newSpeedX = -1.2;
+      } else if (event.clientX > this.right) {
+        newSpeedX = 1.2;
+      } else {
+        newSpeedX = 0.0;
+      }
     } else {
       newSpeedX = 0.0;
     }
 
-  }else{
-    newSpeedX = 0.0;
-
+    if (this.speedX !== newSpeedX) {
+      this.speedX = newSpeedX;
+      this._rotateCar((-this.speedX * 20 * Math.PI) / 180, 0.5);
+    }
   }
-
-  if (this.speedX !== newSpeedX) {
-    this.speedX = newSpeedX;
-    this._rotateCar((-this.speedX * 20 * Math.PI) / 180, 0.5);
-  }
-}
 
   _keydown(event) {
     let newSpeedX;
@@ -388,10 +383,9 @@ class Game {
 
     this.speedIncrementor = this.speedIncrementor + 0.15;
 
-    if(this.difficulty == 0 && this.speed < 7){
-      this.speedZ =this.speedZ + 0.00045;
-    }
-    else if (this.difficulty == 1 && this.speedZ < 9) {
+    if (this.difficulty == 0 && this.speed < 7) {
+      this.speedZ = this.speedZ + 0.00045;
+    } else if (this.difficulty == 1 && this.speedZ < 9) {
       this.speedZ = this.speedZ + 0.00045;
     } else if (this.difficulty == 2 && this.speedZ < 12) {
       this.speedZ = this.speedZ + 0.00045;
@@ -404,11 +398,11 @@ class Game {
     this.treesParent.position.z =
       this.speedZ * this.time + this.speedIncrementor;
 
-    if (this.translateX > 2.1){
-      this.translateX =2.0;
-    }else if(this.translateX < -2.1) {
-      this.translateX =-2.0;        
-    }else{
+    if (this.translateX > 2.1) {
+      this.translateX = 2.0;
+    } else if (this.translateX < -2.1) {
+      this.translateX = -2.0;
+    } else {
       this.objectsParent.position.x = this.translateX;
       this.lineParent.position.x = this.translateX;
       this.treesParent.position.x = this.translateX;
@@ -561,37 +555,30 @@ class Game {
   }
 
   _gameOver() {
-    
-    if(this.highScore < this.score){
+    if (this.highScore < this.score) {
       this.highScore = this.score;
-      document.getElementById("new-high").style.display ="grid";
-      document.getElementById("new-high_").style.display ="grid";
+      document.getElementById("new-high").style.display = "grid";
+      document.getElementById("new-high_").style.display = "grid";
 
       setTimeout(() => {
         document.getElementById("new-high").style.display = "none";
         document.getElementById("new-high_").style.display = "none";
-
       }, 6000);
-
-
     }
-    
+
     document.getElementById("crash").style.display = "grid";
     setTimeout(() => {
       document.getElementById("crash").style.display = "none";
     }, 1500);
     this.running = false;
     this.divGameOverScore.innerText = this.score;
-    this.divGameOverDistance.innerText =this.objectsParent.position.z.toFixed(0);
+    this.divGameOverDistance.innerText =
+      this.objectsParent.position.z.toFixed(0);
     this.divGameOverHighScore.innerText = this.highScore;
     setTimeout(() => {
       this.divGameOverPanel.style.display = "grid";
       this._reset(true);
     }, 1000);
-
-  
-
-
   }
 
   _createPlayerCar(scene) {
@@ -667,7 +654,7 @@ class Game {
 
     spotLight.shadow.camera.near = 500;
     spotLight.shadow.camera.far = 4000;
-    spotLight.shadow.camera.fov = 50;   
+    spotLight.shadow.camera.fov = 50;
 
     this.car.add(spotLight);
     scene.add(this.car);
@@ -813,12 +800,13 @@ class Game {
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(20000, 20000, 10, 10),
       new THREE.MeshStandardMaterial({
-          color: 0x7CFC00,
-        }));
+        color: 0x7cfc00,
+      })
+    );
     ground.castShadow = false;
     ground.receiveShadow = true;
     ground.rotation.x = -Math.PI / 2;
-    ground.position.set(0,-0.1,0)
+    ground.position.set(0, -0.1, 0);
     this.scene.add(ground);
 
     const leftLine = new THREE.Mesh(
@@ -1034,7 +1022,9 @@ class Game {
 
     var geometry3 = new THREE.SphereGeometry(20, 100, 60);
     var material3 = new THREE.MeshBasicMaterial();
-    material3.map = new THREE.TextureLoader().load("resources/afternoon_sky.jpg");
+    material3.map = new THREE.TextureLoader().load(
+      "resources/afternoon_sky.jpg"
+    );
     material3.side = THREE.BackSide;
     this.skydome3 = new THREE.Mesh(geometry3, material3);
     this.scene.add(this.skydome);
