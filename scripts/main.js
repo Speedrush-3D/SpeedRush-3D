@@ -763,100 +763,118 @@ changing the sky geometries and lighting positions (_changeLevel()), for the nec
     spotLight.distance = 300;
     spotLight.intensity = 1.5;
 
+    //setting up the shadow properties of the light
     spotLight.castShadow = true;
     spotLight.shadow.mapSize.width = 1024;
     spotLight.shadow.mapSize.height = 1024;
+    spotLight.shadow.camera.near = 1;
+    spotLight.shadow.camera.far = 500;
 
-    spotLight.shadow.camera.near = 500;
-    spotLight.shadow.camera.far = 4000;
-    spotLight.shadow.camera.fov = 50;
-
+    //adding the light onto the car
     this.car.add(spotLight);
     scene.add(this.car); 
   }
 
+  /*This function is used to set up the scene from screatch is replay = false or
+  if replay = true, it means that the scene was created before so 
+  it rearranges the scene so all the objects in the scene dont have to be deleted
+  and recreated again from scratch
+  */
   _initializeScene(scene, camera, replay) {
     if (!replay) {
-      this._createSky();
-      this._createPlayerCar(scene);
-      this.objectsParent = new THREE.Group();
+      this._createSky(); //function that creates the multiple skydomes needed for the different levels
+      this._createPlayerCar(scene); //function that creates the player car using hierarchical modelling
+      
+      this.objectsParent = new THREE.Group();//stores all of the obstacle cars
       this.objectsParent.userData = { type: "obstacle_parent" };
 
-      this.lineParent = new THREE.Group();
+      this.lineParent = new THREE.Group();//stores all of the moving lane lines in the scene
 
-      this.treesParent = new THREE.Group();
+      this.treesParent = new THREE.Group(); //stores all the moving scenery in the scene
       this.treesParent.userData = { type: "trees_parent" };
 
-      this.roadLineParent = new THREE.Group();
+      this.roadLineParent = new THREE.Group();//stores all the still objects in the scene
+                                              //lines on sid of road
+                                              //ground
+                                              //couple of lane lines which stay still at the far end of the road
 
       scene.add(this.objectsParent);
       scene.add(this.lineParent);
       scene.add(this.treesParent);
       scene.add(this.roadLineParent);
 
-      this._spawnRoadLines();
+      this._spawnRoadLines(); //function which creates all of the still objects in the scene
 
-      for (let i = 0; i < 8; i++) {
+
+      for (let i = 0; i < 8; i++) { //spawning 8 scenery objects
         this._spawnTrees();
       }
 
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < 7; i++) {//spawning 7 obstacles
         this._spawnObstacle();
       }
 
+      //calls a function which spawns a lane line and puts it in the correct position
+      //in total spawns twelve lane lines 
+      //4 per a lane
       let pos1 = 0;
       let pos2 = 0;
       let pos3 = 0;
       for (let i = 0; i < 12; i++) {
         if (i == 0 || i == 1 || i == 2 || i == 3) {
           this.lane = 0;
-          this._spawnLaneLines(this.lane, pos1);
+          this._spawnLaneLines(this.lane, pos1); //for the first lane
           pos1 = pos1 + 1;
         } else if (i == 4 || i == 5 || i == 6 || i == 7) {
           this.lane = 1;
-          this._spawnLaneLines(this.lane, pos2);
+          this._spawnLaneLines(this.lane, pos2);//for the second lane
           pos2 = pos2 + 1;
         } else {
           this.lane = 2;
-          this._spawnLaneLines(this.lane, pos3);
+          this._spawnLaneLines(this.lane, pos3);//for the third lane
           pos3 = pos3 + 1;
         }
       }
 
+      //setting the camera to the third person view
       camera.rotateX((-20 * Math.PI) / 180);
       camera.position.set(0, 1.5, 3);
-    } else {
+    } 
+    
+    else { //used for rearranging the scene if it doesnt have to be created from scratch
       this.objectsParent.traverse((item) => {
         if (item.name == "obs") {
-          this._setupObstacle(item);
-        } else if (item.userData.type == "obstacle_parent") {
+          this._setupObstacle(item);//traversing the three group and calling a function to place the obstacles in the correct place 
+        } else if (item.userData.type == "obstacle_parent") { //place the group parent back to the default position
           item.position.set(0, 0, 0);
         }
       });
 
       this.treesParent.traverse((item) => {
-        if (item.name == "Tree") {
-          this._setupTrees(item);
+        if (item.name == "Tree") { 
+          this._setupTrees(item);//traversing the three group and calling a function to place the scenery in the correct place
         } else if (item.userData.type == "trees_parent") {
-          item.position.set(0, 0, 0);
+          item.position.set(0, 0, 0);//place the group parent back to the default position
         }
       });
 
       this.lineParent.traverse((item) => {
         if (item instanceof THREE.Mesh) {
-          this._setupLaneLines(item, item.userData.type, 0, item.userData.pos);
+          this._setupLaneLines(item, item.userData.type, 0, item.userData.pos);//traversing the three group and calling a function to place the lane lines in the correct place
         } else {
-          item.position.set(0, 0, 0);
+          item.position.set(0, 0, 0);//place the group parent back to the default position
         }
       });
     }
   }
 
-  _spawnTrees() {
+  /*function that loads the fbx models we have used for scenery*/
+  _spawnTrees() { 
     const obj = new THREE.Group();
     const loader = new FBXLoader();
 
-    let rand = math._randomInt(0, 4);
+    let rand = math._randomInt(0, 4);//gives a random integer between 0 and 4
+                                    //used for selecting random scenery objects to place into the scene
     let pathStr = "";
     switch (rand) {
       case 0:
@@ -875,6 +893,8 @@ changing the sky geometries and lighting positions (_changeLevel()), for the nec
         pathStr = "resources/nature_pack/FBX/Tree1.fbx";
         break;
     }
+
+    //loading in the actual fbx object as determined by the path chosen at random above
     loader.load(pathStr, function (fbx) {
       fbx.scale.setScalar(0.007);
 
@@ -898,20 +918,35 @@ changing the sky geometries and lighting positions (_changeLevel()), for the nec
 
     obj.userData = { type: "Tree" };
     obj.name = "Tree";
-    this._setupTrees(obj);
-    this.treesParent.add(obj);
+    this._setupTrees(obj); //function to give the object its correct position in the scene
+    this.treesParent.add(obj);//adding the object to the group of all scenery objects
   }
 
+  /*
+  this function is used extensively to continuously respawn the scenery,
+  once they pass the player car they are respawned to the other end 
+  and placed on the left side or right side at random
+  */
   _setupTrees(obj, refZPos = 0) {
-    let lane = math._randomInt(0, 2);
+    let lane = math._randomInt(0, 2); //place objects on either left side or right side of road chosen at random
     if (lane == 0) {
-      obj.position.set(-5.5, -0.1, refZPos - 2 - math._randomFloat(10, 30));
+      obj.position.set(-5.5, -0.1, refZPos - 2 - math._randomFloat(10, 30));//the random number is used here so the objects spawn 
+                                                                            //at a nice distance away from the player car
+                                                                            //and dont just pop up right next to the player car
+                                                                            
     } else if (lane == 1) {
       obj.position.set(5.5, -0.1, refZPos - 2 - math._randomFloat(10, 30));
     }
   }
 
+
+  /*this function is used to spawn all the objects in the scene which dont have movement along the z axis
+  this includes the ground, the solid line found on the left and right sides of the road,
+  the six still lane lines seen at the far end of the road and the textured road itself.
+  */
   _spawnRoadLines() {
+
+    //creating the ground as a large plane with a grass green colour
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(20000, 20000, 10, 10),
       new THREE.MeshStandardMaterial({
@@ -924,6 +959,7 @@ changing the sky geometries and lighting positions (_changeLevel()), for the nec
     ground.position.set(0, -0.1, 0);
     this.scene.add(ground);
 
+    //solid line on left side of the road
     const leftLine = new THREE.Mesh(
       this.ROADLINE_PREFAB,
       this.LANELINE_MATERIAL
@@ -934,6 +970,7 @@ changing the sky geometries and lighting positions (_changeLevel()), for the nec
 
     this.roadLineParent.add(leftLine);
 
+    //solid line on the right side of the road
     const rightLine = new THREE.Mesh(
       this.ROADLINE_PREFAB,
       this.LANELINE_MATERIAL
@@ -944,6 +981,8 @@ changing the sky geometries and lighting positions (_changeLevel()), for the nec
 
     this.roadLineParent.add(rightLine);
 
+
+    //the following below is to create the 6 still lane lines at the far end of the road
     const laneLine_1 = new THREE.Mesh(
       this.LANELINE_PREFAB,
       this.LANELINE_MATERIAL
@@ -986,6 +1025,7 @@ changing the sky geometries and lighting positions (_changeLevel()), for the nec
     laneLine_6.rotation.set(-Math.PI / 2, Math.PI / 2000, Math.PI);
     laneLine_6.position.set(1.2, 0, -20);
 
+    //creating the geometry and material as well as mapping a texture to it for the road
     var geo = new THREE.PlaneGeometry(5, 32, 1);
     var mat = new THREE.MeshStandardMaterial();
     var texture = new THREE.TextureLoader().load("resources/road.jpg");
@@ -994,12 +1034,14 @@ changing the sky geometries and lighting positions (_changeLevel()), for the nec
     texture.repeat.set(4, 4);
     mat.map = texture;
 
+    //creating the road from the above geometry and material
     var road = new THREE.Mesh(geo, mat);
-    road.position.set(0, -0.01, -10);
-    road.rotation.set(-Math.PI / 2, Math.PI / 2000, Math.PI);
-    road.receiveShadow = true;
+    road.position.set(0, -0.01, -10);//setting its position
+    road.rotation.set(-Math.PI / 2, Math.PI / 2000, Math.PI); //rotating it so its flat
+    road.receiveShadow = true;//allwing it to receive shadows
     road.castShadow = false;
 
+    //setting up shadow properties for all the still objects
     laneLine_1.receiveShadow = true;
     laneLine_1.castShadow = false;
 
@@ -1018,6 +1060,7 @@ changing the sky geometries and lighting positions (_changeLevel()), for the nec
     laneLine_6.receiveShadow = true;
     laneLine_6.castShadow = false;
 
+    //adding the still objects to the parent object
     this.roadLineParent.add(road);
     this.roadLineParent.add(laneLine_1);
     this.roadLineParent.add(laneLine_2);
@@ -1027,29 +1070,41 @@ changing the sky geometries and lighting positions (_changeLevel()), for the nec
     this.roadLineParent.add(laneLine_6);
   }
 
+  //used to spawn all the moving lane lines in the scene, this function creates a single lane line
+  //and calls a function to put it in its coreect position determined by the parameter pos
   _spawnLaneLines(lane, pos) {
     const plane = new THREE.Mesh(this.LANELINE_PREFAB, this.LANELINE_MATERIAL);
     plane.rotation.set(-Math.PI / 2, Math.PI / 2000, Math.PI);
-    plane.userData = { type: lane, pos: pos };
+    plane.userData = { type: lane, pos: pos };//sets user data so we know which object we dealing with, necessary for later
     plane.castShadow = false;
     plane.receiveShadow = true;
     this._setupLaneLines(plane, lane, 0, pos);
     this.lineParent.add(plane);
   }
 
+  /*
+  sets up the lane lines in the three lanes
+  by a position determined by lane, as well as 
+  sets it at the correct distance away from the player car
+
+  is used extensively to continuously respawn the lane lines,
+  once they pass the player car they are respawned to the other endo of the grid
+  */
   _setupLaneLines(laneLine, lane, refZPos = 0, pos = -1) {
-    if (pos == 0) {
+    if (pos == 0) { //first line infront of player car
       pos = refZPos;
-    } else if (pos == 1) {
+    } else if (pos == 1) {//second line infront of player car
       pos = refZPos - 4;
-    } else if (pos == 2) {
+    } else if (pos == 2) {//third line infront of player car
       pos = refZPos - 8;
-    } else if (pos == 3) {
+    } else if (pos == 3) {//fourth line infront of player car
       pos = refZPos - 12;
-    } else {
+    } else {//a default just incase
       pos = refZPos - 12;
     }
 
+    //putting the lines in the correct position as determined by lane
+    //either the right lane, left lane or center lane
     if (lane == 0) {
       laneLine.position.set(-1.2, 0, pos);
     } else if (lane == 1) {
@@ -1059,12 +1114,15 @@ changing the sky geometries and lighting positions (_changeLevel()), for the nec
     }
   }
 
+  //function to load in an fbx model we use for obstacles and call a function to place them in the correct place
   _spawnObstacle() {
     const obj = new THREE.Group();
     const loader = new FBXLoader();
 
-    let rand = math._randomInt(0, 6);
+    let rand = math._randomInt(0, 6); //gives a random integer between 0 and 6
+                                      //used for selecting random obstacle objects to place into the scene
     let pathStr = "";
+    //setting the path string to the relevant fbx model as determind by the random number
     switch (rand) {
       case 0:
         pathStr = "resources/car_pack/FBX/NormalCar1.fbx";
@@ -1088,6 +1146,8 @@ changing the sky geometries and lighting positions (_changeLevel()), for the nec
         pathStr = "resources/car_pack/FBX/NormalCar1.fbx";
         break;
     }
+
+    //loading in the fbx model
     loader.load(pathStr, function (fbx) {
       fbx.scale.setScalar(0.0045);
 
@@ -1114,27 +1174,33 @@ changing the sky geometries and lighting positions (_changeLevel()), for the nec
       obj.add(fbx);
     });
 
-    obj.userData = { type: "obstacle" };
+    obj.userData = { type: "obstacle" };//allows us to identify it later
     obj.name = "obs";
     this._setupObstacle(obj);
-    this.objectsParent.add(obj);
+    this.objectsParent.add(obj);//adding the model to the THREE group of obstacles
   }
 
+  //function to create the different skydomes required for the different levels
+  //each of them is a sphere geometry with a texture of the sky painted on the inside of the sphere
+  //so basically the player car and everything visible in the scene is inside the sky sphere
   _createSky() {
+    //day sky
     var geometry = new THREE.SphereGeometry(30, 100, 60);
-
     var material = new THREE.MeshBasicMaterial();
     material.map = new THREE.TextureLoader().load("resources/sky.jpg");
     material.side = THREE.BackSide;
     this.skydome = new THREE.Mesh(geometry, material);
 
+    //night sky with a smaller sphere geometry to make it appear as if obstacles are spawning closer to the player car
+    //gives user less time to react to newly spawned obstacles
     var geometry2 = new THREE.SphereGeometry(15, 100, 60);
-
     var material2 = new THREE.MeshBasicMaterial();
     material2.map = new THREE.TextureLoader().load("resources/night_sky.jpg");
     material2.side = THREE.BackSide;
     this.skydome2 = new THREE.Mesh(geometry2, material2);
 
+    //afternoon sky with a smaller sphere geometry to make it appear as if obstacles are spawning closer to the player car
+    //gives user less time to react to newly spawned obstacles
     var geometry3 = new THREE.SphereGeometry(20, 100, 60);
     var material3 = new THREE.MeshBasicMaterial();
     material3.map = new THREE.TextureLoader().load(
@@ -1142,26 +1208,34 @@ changing the sky geometries and lighting positions (_changeLevel()), for the nec
     );
     material3.side = THREE.BackSide;
     this.skydome3 = new THREE.Mesh(geometry3, material3);
+
     this.scene.add(this.skydome);
     this.scene.add(this.skydome2);
     this.scene.add(this.skydome3);
   }
 
+  /*function used to place obstacles in the scene, as well as continuously
+  respawn them in a random lane, at a random distance away from the user
+  */
   _setupObstacle(obj, refZPos = 0) {
-    let lane = math._randomInt(0, 4);
-    let currZ = refZPos - 10 - math._randomFloat(0, 10);
+    let lane = math._randomInt(0, 4);//select a lane at random
+    let currZ = refZPos - 10 - math._randomFloat(0, 10);//used so obstacles dont spawn too close or too far away from the player car
 
-    this.posArr[this.obstacleCounter] = currZ;
-
+    /*the code below is used to help prevent obstacles from spawning inside one another
+    loops throught the array which contains all of the z positions of the obstacles
+    if the obstacle is too close to another obstacle it moves it a bit
+    */
+    this.posArr[this.obstacleCounter] = currZ;//array storing the z position of the obstacles
     for (let j = 0; j < this.posArr.length; j++) {
       for (let i = 0; i < this.posArr.length; i++) {
         if (this.posArr[i] - currZ - this.objectsParent.position.z < 0.75) {
-          currZ = currZ - 1;
-          this.posArr[this.obstacleCounter] = currZ;
+          currZ = currZ - 1.25; //changing the z position of the current obstacle
+          this.posArr[this.obstacleCounter] = currZ; //updating the array
         }
       }
     }
 
+    //placing the obstacle in the correct lane
     if (lane == 0) {
       obj.position.set(-2, 0, currZ);
     } else if (lane == 1) {
@@ -1172,7 +1246,11 @@ changing the sky geometries and lighting positions (_changeLevel()), for the nec
       obj.position.set(2, 0, currZ);
     }
 
+    //updating the amount of obstacles we have in the scene, necessary for the array used for holding the z positions
     this.obstacleCounter = this.obstacleCounter + 1;
+    /*the if statement below basically means that if all the obstacles have been placed in the scene 
+    the count must go back to zero so that when they are respawned the count will be correct 
+    and we will be referencing correct elements in the array*/
     if (this.obstacleCounter == this.posArr.length) {
       this.obstacleCounter = 0;
     }
