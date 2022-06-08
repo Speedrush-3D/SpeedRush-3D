@@ -112,7 +112,9 @@ body {
 #game-over-score-row,
 #game-over-distance-row,
 #paused-score-row,
-#paused-distance-row {
+#paused-distance-row,
+#paused-high-score-row,
+#game-over-high-score-row {
   display: flex;
   justify-content: center;
   margin-bottom: 1rem;
@@ -125,10 +127,29 @@ body {
   cursor: pointer;
 }
 
+#new-high,
+#new-high_ {
+  font-size: 0.75rem;
+  transform: rotate(-45deg);
+  margin-left: 0rem;
+  animation: blinker 1s linear infinite;
+  padding-left: 0.9rem;
+  padding-right: 0.9rem;
+  display: none;
+}
+
+@keyframes blinker {
+  50% {
+    transform: rotate(45deg);
+  }
+}
+
 #game-over-score,
 #game-over-distance,
 #pause-score,
-#pause-distance {
+#pause-distance,
+#pause-high-score,
+#game-over-high-score {
   margin-left: 0.5rem;
 }
 
@@ -276,4 +297,34 @@ body {
   background: rgba(255, 255, 255, 0.3);
 
   font-size: 44.44px;
+}
+
+.tooltip {
+  position: inherit;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+  font-size:36px;
+}
+
+.tooltip .tooltiptext {
+  font-size: 15px;
+  visibility: hidden;
+  width: max-content;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 10px;
+  padding: 10px 5px;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
 }

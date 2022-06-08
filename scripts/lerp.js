@@ -1,3 +1,5 @@
+/*linear interpolator whichinterpolates between two numbers over a period of time
+this enables us to do the animations necessary for the player car*/
 class Lerp{
     constructor(from, to, delay){
         this.from = from;
