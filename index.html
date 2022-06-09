@@ -9,6 +9,7 @@
 
     <script type="module" src="scripts/main.js"></script>
   </head>
+
   <body>
     <div id="info">
       <div id="score-row">
@@ -22,22 +23,18 @@
     </div>
 
     <div id="intro-panel">
-      <div class="tooltip">&#x1F6C8;
-        <span class="tooltiptext">
-          <p>Controls:</p> 
-          <p>P = Pause</p>
-          <p>V = Change View</p>
-          <p>W or Left Arrow Key or Drag Mouse Left = Turn Left</p>
-          <p>A or Right Arrow Key or Drag Mouse Right = Turn Left</p>
-          
-          <p>Good Luck!!</p>
-        </span>
-      </div>
       <div id="intro-column">
         <div id="intro-title"><img src="resources/title.png" alt="SR" /></div>
         <div>
+          <button id="controls-button" onclick="location.href='controls.html'">
+            <img src="resources/controlsButton1.png" alt="SR" />
+          </button>
           <button id="start-button">
             <img src="resources/start.png" alt="SR" />
+          </button>
+
+          <button id="credit-button" onclick="location.href='credits.html'">
+            <img src="resources/creditButton.png" alt="SR" />
           </button>
         </div>
       </div>
@@ -52,18 +49,18 @@
 
     <div id="game-over-panel">
       <div id="game-over-column">
-        
         <div id="game-over-title">
           <img src="resources/over.png" alt="SR" />
         </div>
-        <div class="tooltip">&#x1F6C8;
+        <div class="tooltip">
+          &#x1F6C8;
           <span class="tooltiptext">
-            <p>Controls:</p> 
+            <p>Controls:</p>
             <p>P = Pause</p>
             <p>V = Change View</p>
-            <p>W or Left Arrow Key or Drag Mouse Left = Turn Left</p>
-            <p>A or Right Arrow Key or Drag Mouse Right = Turn Left</p>
-  
+            <p>A or Left Arrow Key or Drag Mouse Left = Turn Left</p>
+            <p>D or Right Arrow Key or Drag Mouse Right = Turn Right</p>
+
             <p>Good Luck!!</p>
           </span>
         </div>
@@ -93,14 +90,15 @@
     <div id="pause-panel">
       <div id="pause-column">
         <div id="pause-title"><img src="resources/pause.png" alt="SR" /></div>
-        <div class="tooltip">&#x1F6C8;
+        <div class="tooltip">
+          &#x1F6C8;
           <span class="tooltiptext">
-            <p>Controls:</p> 
+            <p>Controls:</p>
             <p>P = Pause</p>
             <p>V = Change View</p>
-            <p>W or Left Arrow Key or Drag Mouse Left = Turn Left</p>
-            <p>A or Right Arrow Key or Drag Mouse Right = Turn Left</p>
-  
+            <p>A or Left Arrow Key or Drag Mouse Left = Turn Left</p>
+            <p>D or Right Arrow Key or Drag Mouse Right = Turn Right</p>
+
             <p>Good Luck!!</p>
           </span>
         </div>
