@@ -114,7 +114,7 @@ class Game {
 
       this.running = true;
 
-      //hiding these panels which were created in html so the suer can actually play the game
+      //hiding these panels which were created in html so the user can actually play the game
       document.getElementById("intro-panel").style.display = "none";
       document.getElementById("level-up").style.display = "none";
       document.getElementById("crash").style.display = "none";
